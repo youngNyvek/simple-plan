@@ -10,6 +10,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<String> teste = List.generate(2, (index) => "3");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +23,30 @@ class _HomeState extends State<Home> {
             width: 128,
             height: 200,
           ),
-          const CardItem()
+          Expanded(
+              flex: 1,
+              child: ListView(
+                children: const [
+                  CardItem(
+                    initial: 2,
+                    balance: 2,
+                    income: 2,
+                    expenses: 2,
+                  ),
+                  CardItem(
+                    initial: 2,
+                    balance: 2,
+                    income: 2,
+                    expenses: 2,
+                  ),
+                  CardItem(
+                    initial: 2,
+                    balance: 2,
+                    income: 2,
+                    expenses: 2,
+                  )
+                ],
+              ))
         ],
       )),
       floatingActionButton: Padding(
