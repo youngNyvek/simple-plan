@@ -7,9 +7,11 @@ class CardItem extends StatelessWidget {
   final double balance;
   final double income;
   final double expenses;
+  final double marginTop;
 
   const CardItem(
       {super.key,
+      required this.marginTop,
       required this.initial,
       required this.balance,
       required this.income,
