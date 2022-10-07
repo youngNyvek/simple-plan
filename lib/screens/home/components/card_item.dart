@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/utils/theme_colors.dart';
+import 'package:simple_plan/shared/utils/theme_colors.dart';
 import 'package:intl/intl.dart';
 
 class CardItem extends StatelessWidget {

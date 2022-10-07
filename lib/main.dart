@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/screens/home.dart';
-import 'package:simple_plan/utils/theme_Colors.dart';
+import 'package:simple_plan/screens/add_plan/add_plan.dart';
+import 'package:simple_plan/screens/home/home.dart';
+import 'package:simple_plan/shared/utils/theme_colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Simple Plan',
       theme: ThemeData(scaffoldBackgroundColor: ThemeColors.darkBlue),
-      home: const Home(),
+      routes: {
+        '/': (context) => const Home(),
+        '/addPlan': (context) => const AddPlan()
+      },
     );
   }
 }
