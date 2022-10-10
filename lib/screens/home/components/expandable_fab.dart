@@ -16,6 +16,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
   @override
   void initState() {
     super.initState();
+    _open = false;
   }
 
   void _toggle() {
@@ -36,7 +37,8 @@ class _ExpandableFabState extends State<ExpandableFab> {
               right: 70,
               icon: const Icon(Icons.library_add),
               label: Constants.addPlanLabel,
-              onPressed: () => {Navigator.pushNamed(context, '/addPlan')}),
+              onPressed: () =>
+                  {_toggle(), Navigator.pushNamed(context, '/addPlan')}),
           FabActionButton(
               isOpen: _open,
               bottom: 70,
