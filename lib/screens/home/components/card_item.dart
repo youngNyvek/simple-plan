@@ -24,7 +24,7 @@ class CardItem extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-            height: 64,
+            height: 72,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
