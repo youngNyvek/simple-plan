@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:simple_plan/screens/home/home.dart';
 import 'package:simple_plan/shared/utils/theme_colors.dart';
 
@@ -14,7 +15,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Simple Plan',
-      theme: ThemeData(scaffoldBackgroundColor: ThemeColors.dark),
+      theme: ThemeData(
+          scaffoldBackgroundColor: ThemeColors.dark,
+          textTheme: GoogleFonts.poppinsTextTheme()),
       routes: {
         '/': (context) => const Home(),
         '/addPlan': (context) => const Home()

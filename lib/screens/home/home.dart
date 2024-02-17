@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:simple_plan/db/entities/cash_flow.dart';
 import 'package:simple_plan/screens/home/components/expandable_fab.dart';
 import 'package:simple_plan/shared/enum/months.dart';
+import 'package:simple_plan/shared/enum/occurence_type.dart';
 import 'package:simple_plan/shared/utils/theme_colors.dart';
 import 'package:simple_plan/shared/utils/string_utils.dart';
 
@@ -17,6 +19,31 @@ class _HomeState extends State<Home> {
   late int _selectedMonth;
   late int _selectedYear;
   late String _monthKey;
+
+  final mockCashFlow = [
+    CashFlow(
+      id: 1,
+      description: 'Salário',
+      value: 1000.0,
+      startDate: DateTime.now(),
+      occurrence: 1,
+      finishDate: null,
+      parcel: null,
+      firstParcelId: null,
+      monthlyPlanId: 'monthlyPlanId-123',
+    ),
+    CashFlow(
+      id: 2,
+      description: 'Acadêmia',
+      value: 1000.0,
+      startDate: DateTime.now(),
+      occurrence: 2,
+      finishDate: null,
+      parcel: null,
+      firstParcelId: null,
+      monthlyPlanId: 'monthlyPlanId-123',
+    )
+  ];
 
   _HomeState() {
     _selectedMonth = _now.month;
@@ -112,7 +139,7 @@ class _HomeState extends State<Home> {
     return Padding(
         padding: const EdgeInsets.all(16),
         child: Container(
-            height: 140,
+            height: 156,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
@@ -128,7 +155,7 @@ class _HomeState extends State<Home> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          StringUtils.formatCurrency(3000),
+                          StringUtils.formatCurrency(10),
                           style: const TextStyle(
                               color: Colors.white, fontSize: 20),
                         ),
@@ -209,108 +236,74 @@ class _HomeState extends State<Home> {
         child: ListView(
           // This next line does the trick.
           scrollDirection: Axis.vertical,
-          children: [
-            cashFlowCard(ThemeColors.red),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.green),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.red),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.green),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.red),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.green),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.red),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.green),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.green),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.red),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.green),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.red),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.green),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.red),
-            const SizedBox(
-              height: 16,
-            ),
-            cashFlowCard(ThemeColors.green)
-          ],
+          children: mockCashFlow
+              .map((item) => Column(
+                    children: [
+                      cashFlowCard(item),
+                      const SizedBox(
+                        height: 18,
+                      ),
+                    ],
+                  ))
+              .toList(),
         ));
   }
 
-  Widget cashFlowCard(Color iconColor) {
+  Widget cashFlowCard(CashFlow cashFlow) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18),
       child: Row(children: [
         Icon(
-          Icons.arrow_circle_down_rounded,
+          cashFlow.occurrence == OccurrenceType.expense.id
+              ? Icons.arrow_circle_down_rounded
+              : Icons.arrow_circle_up_rounded,
           size: 26,
-          color: iconColor,
+          color: cashFlow.occurrence == OccurrenceType.expense.id
+              ? ThemeColors.red
+              : ThemeColors.green,
         ),
         const SizedBox(
           width: 12,
         ),
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              Text(
-                "SAÚDE",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                width: 4,
-              ),
-              Text(
-                "CUSTO FIXO",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold),
-              ),
-            ]),
-            Text(
-              "Acâdemia",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            )
-          ],
-        )
+        Expanded(
+            flex: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(children: [
+                  Text(
+                    "SAÚDE",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 12,
+                  ),
+                  Text(
+                    "CUSTO FIXO",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ]),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      cashFlow.description,
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ],
+                ),
+                Text(
+                  StringUtils.formatCurrency(cashFlow.value),
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                )
+              ],
+            ))
       ]),
     );
   }
