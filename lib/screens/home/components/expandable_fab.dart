@@ -45,48 +45,26 @@ class _ExpandableFabState extends State<ExpandableFab> {
               icon: const Icon(Icons.group_work),
               label: "Nova Categoria",
               onPressed: () => {}),
-          _buildTapToCloseFab(),
-          _buildTapToOpenFab()
+          _exapandButton()
         ],
       ),
     );
   }
 
-  Widget _buildTapToCloseFab() {
+  Widget _exapandButton() {
     return AnimatedContainer(
       transformAlignment: Alignment.center,
-      transform: Matrix4.rotationZ(_open ? 0 : 1),
+      transform: Matrix4.rotationZ(_open ? 0 : 2.4),
       duration: const Duration(milliseconds: 250),
       curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
       child: FloatingActionButton(
         heroTag: "clsBtn",
         onPressed: _toggle,
+        shape: const CircleBorder(),
         backgroundColor: Colors.white,
-        child: const Icon(
+        child: Icon(
           Icons.close,
-          color: ThemeColors.blue,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTapToOpenFab() {
-    return IgnorePointer(
-      ignoring: _open,
-      child: AnimatedContainer(
-        transformAlignment: Alignment.center,
-        transform: Matrix4.rotationZ(_open ? 1 : 0),
-        duration: const Duration(milliseconds: 250),
-        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-        child: AnimatedOpacity(
-          opacity: _open ? 0.0 : 1.0,
-          curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
-          duration: const Duration(milliseconds: 250),
-          child: FloatingActionButton(
-            heroTag: "opnBtn",
-            onPressed: _toggle,
-            child: const Icon(Icons.add, size: 30),
-          ),
+          color: _open ? ThemeColors.blue : ThemeColors.pink,
         ),
       ),
     );

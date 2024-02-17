@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/screens/home/components/card_item.dart';
 import 'package:simple_plan/screens/home/components/expandable_fab.dart';
+import 'package:simple_plan/shared/enum/months.dart';
 import 'package:simple_plan/shared/utils/theme_colors.dart';
 import 'package:simple_plan/shared/utils/string_utils.dart';
 
@@ -13,11 +13,52 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool _floatingButtonIsOpened = false;
+  final _now = DateTime.now();
+  late int _selectedMonth;
+  late int _selectedYear;
+  late String _monthKey;
+
+  _HomeState() {
+    _selectedMonth = _now.month;
+    _selectedYear = _now.year;
+  }
 
   void changeFloatingState() {
     setState(() {
       _floatingButtonIsOpened = !_floatingButtonIsOpened;
     });
+  }
+
+  void changeMonthKey() {
+    setState(() {
+      _monthKey = "$_selectedMonth:$_selectedYear";
+    });
+  }
+
+  void handlePreviousMonth() {
+    setState(() {
+      if (_selectedMonth == Month.jan.number) {
+        _selectedMonth = Month.dec.number;
+        _selectedYear = _selectedYear - 1;
+      } else {
+        _selectedMonth = _selectedMonth - 1;
+      }
+    });
+
+    changeMonthKey();
+  }
+
+  void handleNextMonth() {
+    setState(() {
+      if (_selectedMonth == Month.dec.number) {
+        _selectedMonth = Month.jan.number;
+        _selectedYear = _selectedYear + 1;
+      } else {
+        _selectedMonth = _selectedMonth + 1;
+      }
+    });
+
+    changeMonthKey();
   }
 
   @override
@@ -27,8 +68,8 @@ class _HomeState extends State<Home> {
             child: Column(children: [
           Image.asset(
             "assets/images/simplePlan_logo_text.png",
-            width: 128,
-            height: 120,
+            width: 80,
+            height: 110,
           ),
           selectedMonth(),
           principalData()
@@ -37,131 +78,132 @@ class _HomeState extends State<Home> {
   }
 
   Widget selectedMonth() {
-    return const Padding(
-        padding: EdgeInsets.all(16),
+    return Padding(
+        padding: const EdgeInsets.all(16),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Column(children: [
-            Text(
-              "<",
-              style: TextStyle(color: ThemeColors.white, fontSize: 16),
-            )
+            IconButton(
+                icon: const Icon(Icons.chevron_left),
+                tooltip: 'Back to previous month',
+                color: Colors.white,
+                onPressed: handlePreviousMonth),
           ]),
           Row(
             children: [
               Text(
-                "Março | ",
-                style: TextStyle(
+                "${Month.getMonth(_selectedMonth).name} | $_selectedYear ",
+                style: const TextStyle(
                     color: ThemeColors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "2023",
-                style: TextStyle(color: ThemeColors.white, fontSize: 14),
               )
             ],
           ),
           Column(
             children: [
-              Text(
-                ">",
-                style: TextStyle(color: ThemeColors.white, fontSize: 16),
-              )
+              IconButton(
+                  icon: const Icon(Icons.chevron_right),
+                  tooltip: 'Back to next month',
+                  color: Colors.white,
+                  onPressed: handleNextMonth),
             ],
           )
         ]));
   }
 
   Widget principalData() {
-    return Container(
-        height: 116,
+    return Padding(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: ThemeColors.darkGray,
-        ),
-        width: MediaQuery.of(context).size.width -
-            (MediaQuery.of(context).size.width / 12),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      StringUtils.formatCurrency(3000),
-                      style: const TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    const Text(
-                      "Saldo Total",
-                      style: TextStyle(
-                          color: ThemeColors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    )
-                  ],
-                ),
-              ],
+        child: Container(
+            height: 140,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: ThemeColors.darkGray,
             ),
-            Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      StringUtils.formatCurrency(3000),
-                      style: const TextStyle(
-                          color: Colors.white, fontSize: 16, height: 0.5),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          StringUtils.formatCurrency(3000),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 20),
+                        ),
+                        const Row(children: [
+                          Text(
+                            "Saldo Atual",
+                            style: TextStyle(
+                                color: ThemeColors.blue,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          ),
+                          SizedBox(width: 8),
+                          Icon(Icons.trending_flat, color: ThemeColors.blue),
+                        ]),
+                      ],
                     ),
-                    const Text(
-                      "Despesas",
-                      style: TextStyle(
-                          color: ThemeColors.red,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14),
-                    )
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      StringUtils.formatCurrency(3000),
-                      style: const TextStyle(
-                          color: Colors.white, fontSize: 16, height: 0.5),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          StringUtils.formatCurrency(3000),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
+                        const Row(
+                          children: [
+                            Text(
+                              "Despesas",
+                              style: TextStyle(
+                                  color: ThemeColors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
+                            ),
+                            SizedBox(width: 8),
+                            Icon(Icons.trending_down, color: ThemeColors.red),
+                          ],
+                        ),
+                      ],
                     ),
-                    const Text(
-                      "Receitas",
-                      style: TextStyle(
-                          color: ThemeColors.green,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14),
-                    )
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          StringUtils.formatCurrency(3000),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
+                        const Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Receitas",
+                              style: TextStyle(
+                                  color: ThemeColors.green,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
+                            ),
+                            SizedBox(width: 8),
+                            Icon(Icons.trending_up, color: ThemeColors.green),
+                          ],
+                        )
+                      ],
+                    ),
                   ],
-                ),
+                )
               ],
-            )
-          ],
-        ));
+            )));
   }
-
-  // Widget plansList() {
-  //   return Expanded(
-  //       flex: 1,
-  //       child: ListView(padding: EdgeInsets.zero, children: const [
-  //         CardItem(
-  //           marginTop: 3,
-  //           initial: 2,
-  //           balance: 2,
-  //           income: 2,
-  //           expenses: 2,
-  //         ),
-  //         SizedBox(height: 30),
-  //         CardItem(marginTop: 3, initial: 2, balance: 2, income: 2, expenses: 2)
-  //       ]));
-  // }
 }
