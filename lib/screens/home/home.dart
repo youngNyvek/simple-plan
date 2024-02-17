@@ -66,13 +66,9 @@ class _HomeState extends State<Home> {
     return Scaffold(
         body: Center(
             child: Column(children: [
-          Image.asset(
-            "assets/images/simplePlan_logo_text.png",
-            width: 80,
-            height: 110,
-          ),
           selectedMonth(),
-          principalData()
+          principalData(),
+          cashFlowByMonth()
         ])),
         floatingActionButton: const ExpandableFab());
   }
@@ -205,5 +201,117 @@ class _HomeState extends State<Home> {
                 )
               ],
             )));
+  }
+
+  Widget cashFlowByMonth() {
+    return Expanded(
+        flex: 1,
+        child: ListView(
+          // This next line does the trick.
+          scrollDirection: Axis.vertical,
+          children: [
+            cashFlowCard(ThemeColors.red),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.green),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.red),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.green),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.red),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.green),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.red),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.green),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.green),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.red),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.green),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.red),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.green),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.red),
+            const SizedBox(
+              height: 16,
+            ),
+            cashFlowCard(ThemeColors.green)
+          ],
+        ));
+  }
+
+  Widget cashFlowCard(Color iconColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      child: Row(children: [
+        Icon(
+          Icons.arrow_circle_down_rounded,
+          size: 26,
+          color: iconColor,
+        ),
+        const SizedBox(
+          width: 12,
+        ),
+        const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              Text(
+                "SAÚDE",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                width: 4,
+              ),
+              Text(
+                "CUSTO FIXO",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold),
+              ),
+            ]),
+            Text(
+              "Acâdemia",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            )
+          ],
+        )
+      ]),
+    );
   }
 }
