@@ -1,7 +1,7 @@
-class MonthlyPlan {
+class MonthlyPlanEntity {
   final String id;
 
-  const MonthlyPlan({required this.id});
+  const MonthlyPlanEntity({required this.id});
 
   Map<String, Object?> toMap() {
     return {
@@ -11,6 +11,6 @@ class MonthlyPlan {
 
   @override
   String toString() {
-    return 'MonthlyPlan{id: $id}';
+    return 'MonthlyPlanEntity{id: $id}';
   }
 }

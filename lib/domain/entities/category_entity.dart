@@ -1,10 +1,10 @@
-class Category {
+class CategoryEntity {
   final int id;
   final String name;
   final String color;
   final int type;
 
-  const Category({
+  const CategoryEntity({
     required this.id,
     required this.name,
     required this.color,
@@ -22,6 +22,6 @@ class Category {
 
   @override
   String toString() {
-    return 'Category{id: $id, name: $name, color: $color, type: $type}';
+    return 'CategoryEntity{id: $id, name: $name, color: $color, type: $type}';
   }
 }

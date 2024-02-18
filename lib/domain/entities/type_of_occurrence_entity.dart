@@ -1,8 +1,8 @@
-class TypeOfOccurrence {
+class TypeOfOccurrenceEntity {
   final int id;
   final String description;
 
-  TypeOfOccurrence({
+  TypeOfOccurrenceEntity({
     required this.id,
     required this.description,
   });
@@ -16,6 +16,6 @@ class TypeOfOccurrence {
 
   @override
   String toString() {
-    return 'TypeOfOccurrence{id: $id, description: $description}';
+    return 'TypeOfOccurrenceEntity{id: $id, description: $description}';
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/screens/home/components/fab_actionbutton.dart';
-import 'package:simple_plan/shared/constants.dart';
-import 'package:simple_plan/shared/utils/theme_colors.dart';
+import 'package:simple_plan/presentation/screens/home/components/fab_actionbutton.dart';
+import 'package:simple_plan/domain/shared/constants.dart';
+import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
 class ExpandableFab extends StatefulWidget {
   const ExpandableFab({super.key});

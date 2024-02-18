@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:simple_plan/screens/home/home.dart';
-import 'package:simple_plan/shared/utils/theme_colors.dart';
+import 'package:simple_plan/presentation/screens/home/index.dart';
+import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
 void main() {
   runApp(const MyApp());

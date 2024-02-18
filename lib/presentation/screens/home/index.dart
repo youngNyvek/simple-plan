@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/db/entities/cash_flow.dart';
-import 'package:simple_plan/screens/home/components/expandable_fab.dart';
-import 'package:simple_plan/shared/enum/months.dart';
-import 'package:simple_plan/shared/enum/occurence_type.dart';
-import 'package:simple_plan/shared/utils/theme_colors.dart';
-import 'package:simple_plan/shared/utils/string_utils.dart';
+import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
+import 'package:simple_plan/domain/model/transaction_entry_model.dart';
+import 'package:simple_plan/presentation/screens/home/components/expandable_fab.dart';
+import 'package:simple_plan/domain/shared/enum/months.dart';
+import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
+import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,34 +21,26 @@ class _HomeState extends State<Home> {
   late int _selectedYear;
   late String _monthKey;
 
-  final mockCashFlow = [
-    CashFlow(
-      id: 1,
-      description: 'Salário',
-      value: 1000.0,
-      startDate: DateTime.now(),
-      occurrence: 1,
-      finishDate: null,
-      parcel: null,
-      firstParcelId: null,
-      monthlyPlanId: 'monthlyPlanId-123',
-    ),
-    CashFlow(
-      id: 2,
-      description: 'Acadêmia',
-      value: 1000.0,
-      startDate: DateTime.now(),
-      occurrence: 2,
-      finishDate: null,
-      parcel: null,
-      firstParcelId: null,
-      monthlyPlanId: 'monthlyPlanId-123',
-    )
-  ];
+  late List<TransactionEntryModel> mockCashFlow;
 
   _HomeState() {
     _selectedMonth = _now.month;
     _selectedYear = _now.year;
+    mockCashFlow = [
+      TransactionEntryModel.fromEntity(
+          TransactionEntryEntity(
+            id: 1,
+            description: 'Monthly rent',
+            amount: 1200.0,
+            startDate: DateTime(2024, 1, 1),
+            occurrenceType: 1,
+            done: false,
+            finishDate: DateTime(2025, 1, 1),
+            monthlyPlanId: '1:2024',
+          ),
+          _selectedMonth,
+          _selectedYear)
+    ];
   }
 
   void changeFloatingState() {
@@ -249,16 +242,16 @@ class _HomeState extends State<Home> {
         ));
   }
 
-  Widget cashFlowCard(CashFlow cashFlow) {
+  Widget cashFlowCard(TransactionEntryModel transactionEntry) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18),
       child: Row(children: [
         Icon(
-          cashFlow.occurrence == OccurrenceType.expense.id
+          transactionEntry.occurrenceType == OccurrenceType.expense.id
               ? Icons.arrow_circle_down_rounded
               : Icons.arrow_circle_up_rounded,
           size: 26,
-          color: cashFlow.occurrence == OccurrenceType.expense.id
+          color: transactionEntry.occurrenceType == OccurrenceType.expense.id
               ? ThemeColors.red
               : ThemeColors.green,
         ),
@@ -275,7 +268,7 @@ class _HomeState extends State<Home> {
                     "SAÚDE",
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: 10,
                         fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
@@ -285,23 +278,30 @@ class _HomeState extends State<Home> {
                     "CUSTO FIXO",
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: 10,
                         fontWeight: FontWeight.bold),
                   ),
                 ]),
+                Text(
+                  transactionEntry.description,
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      cashFlow.description,
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                      transactionEntry.installmentAmount == null
+                          ? StringUtils.formatCurrency(transactionEntry.amount)
+                          : StringUtils.formatCurrency(
+                              transactionEntry.installmentAmount!),
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
                     ),
+                    Text(
+                      "${transactionEntry.currentInstallment}/${transactionEntry.finalInstallment}",
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                    )
                   ],
                 ),
-                Text(
-                  StringUtils.formatCurrency(cashFlow.value),
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
-                )
               ],
             ))
       ]),

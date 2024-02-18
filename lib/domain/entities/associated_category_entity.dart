@@ -1,9 +1,9 @@
-class AssociatedCategory {
+class AssociatedCategoryEntity {
   final int id;
   final int categoryId;
   final int cashFlowId;
 
-  const AssociatedCategory({
+  const AssociatedCategoryEntity({
     required this.id,
     required this.categoryId,
     required this.cashFlowId,
@@ -19,6 +19,6 @@ class AssociatedCategory {
 
   @override
   String toString() {
-    return 'AssociatedCategory{id: $id, categoryId: $categoryId, cashFlowId: $cashFlowId}';
+    return 'AssociatedCategoryEntity{id: $id, categoryId: $categoryId, cashFlowId: $cashFlowId}';
   }
 }
