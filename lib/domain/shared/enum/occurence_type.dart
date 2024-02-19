@@ -4,6 +4,6 @@ class OccurrenceType {
 
   const OccurrenceType(this.description, this.id);
 
-  static const revenue = OccurrenceType("Receita", 1);
+  static const income = OccurrenceType("Receita", 1);
   static const expense = OccurrenceType("Despesa", 2);
 }
