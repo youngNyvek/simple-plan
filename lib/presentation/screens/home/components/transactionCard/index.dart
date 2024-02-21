@@ -3,6 +3,7 @@ import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/amount_row.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/categories_row.dart';
+import 'package:simple_plan/presentation/screens/home/components/transactionCard/done_flag.dart';
 
 class TransactionCard extends StatelessWidget {
   final int occurrenceType;
@@ -11,6 +12,7 @@ class TransactionCard extends StatelessWidget {
   final double amount;
   final int? currentInstallment;
   final int? finalInstallment;
+  final bool done;
 
   const TransactionCard(
       {super.key,
@@ -19,7 +21,8 @@ class TransactionCard extends StatelessWidget {
       required this.description,
       required this.amount,
       this.currentInstallment,
-      this.finalInstallment});
+      this.finalInstallment,
+      required this.done});
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +33,13 @@ class TransactionCard extends StatelessWidget {
           occurrenceType == OccurrenceType.expense.id
               ? Icons.arrow_circle_down_rounded
               : Icons.arrow_circle_up_rounded,
-          size: 26,
+          size: 24,
           color: occurrenceType == OccurrenceType.expense.id
               ? ThemeColors.red
               : ThemeColors.green,
         ),
         const SizedBox(
-          width: 12,
+          width: 8,
         ),
         Expanded(
             flex: 1,
@@ -44,10 +47,16 @@ class TransactionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CategoriesRow(categories: categories),
-                Text(
-                  description,
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
-                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        description,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                      DoneFlag(done: done, occurenceType: occurrenceType)
+                    ]),
                 AmountRow(
                     amount: amount,
                     currentInstallment: currentInstallment,

@@ -38,7 +38,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
               icon: const Icon(Icons.library_add),
               label: Constants.addPlanLabel,
               onPressed: () =>
-                  {_toggle(), Navigator.pushNamed(context, '/addPlan')}),
+                  {_toggle(), Navigator.pushNamed(context, '/addTransaction')}),
           FabActionButton(
               isOpen: _open,
               bottom: 70,

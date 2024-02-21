@@ -8,6 +8,7 @@ import 'package:simple_plan/domain/shared/enum/months.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 import 'package:simple_plan/domain/shared/utils/string_utils.dart';
+import 'package:simple_plan/presentation/screens/home/components/monthDetails/index.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/amount_row.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/categories_row.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/index.dart';
@@ -51,11 +52,35 @@ class _HomeState extends State<Home> {
       TransactionEntryModel.fromEntity(
           TransactionEntryEntity(
               id: 1,
+              description: 'LUZ',
+              amount: 250,
+              startDate: DateTime(2024, 1, 1),
+              occurrenceType: 2,
+              done: false,
+              monthlyPlanId: '1:2024',
+              createdAt: DateTime(2024, 1, 1)),
+          _selectedMonth,
+          _selectedYear),
+      TransactionEntryModel.fromEntity(
+          TransactionEntryEntity(
+              id: 1,
               description: 'Salário',
               amount: 6000,
               startDate: DateTime(2024, 1, 1),
               occurrenceType: 1,
               done: true,
+              monthlyPlanId: '1:2024',
+              createdAt: DateTime(2024, 1, 1)),
+          _selectedMonth,
+          _selectedYear),
+      TransactionEntryModel.fromEntity(
+          TransactionEntryEntity(
+              id: 1,
+              description: 'Bico que fiz',
+              amount: 300,
+              startDate: DateTime(2024, 1, 1),
+              occurrenceType: 1,
+              done: false,
               monthlyPlanId: '1:2024',
               createdAt: DateTime(2024, 1, 1)),
           _selectedMonth,
@@ -90,7 +115,7 @@ class _HomeState extends State<Home> {
       final doneIncomes = filteredIncomes.where((element) => element.done);
 
       if (doneIncomes.isNotEmpty) {
-        _currentIncomes = filteredIncomes
+        _currentIncomes = doneIncomes
             .map((element) => element.amount)
             .reduce((value, element) => value + element);
       }
@@ -141,7 +166,11 @@ class _HomeState extends State<Home> {
         body: Center(
             child: Column(children: [
           selectedMonth(),
-          principalData(),
+          MonthDetail(
+              currentExpenses: _currentExpenses,
+              expenses: _expenses,
+              currentIncomes: _currentIncomes,
+              incomes: _incomes),
           cashFlowByMonth()
         ])),
         floatingActionButton: const ExpandableFab());
@@ -183,133 +212,6 @@ class _HomeState extends State<Home> {
         ]));
   }
 
-  Widget principalData() {
-    return Container(
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: ThemeColors.darkGray,
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "DESPESAS",
-                          style: TextStyle(
-                              color: ThemeColors.red,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10),
-                        ),
-                        SizedBox(width: 4),
-                        Icon(
-                          Icons.trending_down,
-                          color: ThemeColors.red,
-                          size: 16,
-                        ),
-                      ],
-                    ),
-                    Text(
-                      StringUtils.formatCurrency(_currentExpenses),
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    Text(
-                      "Previsto",
-                      style: TextStyle(
-                          color: ThemeColors.red.withOpacity(0.7),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10),
-                    ),
-                    Text(
-                      StringUtils.formatCurrency(_expenses),
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(0.7), fontSize: 12),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Row(children: [
-                      Text(
-                        "SALDO",
-                        style: TextStyle(
-                            color: ThemeColors.blue,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10),
-                      ),
-                      SizedBox(width: 4),
-                      Icon(Icons.trending_flat,
-                          color: ThemeColors.blue, size: 16),
-                    ]),
-                    Text(
-                      StringUtils.formatCurrency(
-                          _currentIncomes - _currentExpenses),
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    Text(
-                      "Previsto",
-                      style: TextStyle(
-                          color: ThemeColors.blue.withOpacity(0.7),
-                          fontSize: 10),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      StringUtils.formatCurrency(_incomes - _expenses),
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(0.7), fontSize: 12),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.trending_up,
-                            color: ThemeColors.green, size: 16),
-                        SizedBox(width: 4),
-                        Text(
-                          "RECEITAS",
-                          style: TextStyle(
-                            color: ThemeColors.green,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      StringUtils.formatCurrency(_currentIncomes),
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    Text(
-                      "Previsto",
-                      style: TextStyle(
-                          color: ThemeColors.green.withOpacity(0.7),
-                          fontSize: 10),
-                    ),
-                    Text(
-                      StringUtils.formatCurrency(_incomes),
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(0.7), fontSize: 12),
-                    ),
-                  ],
-                )
-              ],
-            )
-          ],
-        ));
-  }
-
   Widget cashFlowByMonth() {
     return Expanded(
         flex: 1,
@@ -320,6 +222,8 @@ class _HomeState extends State<Home> {
               .map((item) => Column(
                     children: [
                       TransactionCard(
+                          key: Key("${item.id}"),
+                          done: item.done,
                           amount: item.amount,
                           categories: item.categories,
                           currentInstallment: item.currentInstallment,

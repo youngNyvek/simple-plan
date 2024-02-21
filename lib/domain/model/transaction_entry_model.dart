@@ -1,6 +1,7 @@
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 
 class TransactionEntryModel {
+  final int id;
   final String description;
   final double amount;
   final DateTime startDate;
@@ -12,9 +13,14 @@ class TransactionEntryModel {
   final int? finalInstallment;
   final List<String> categories;
 
-  static const List<String> _defaultCategories = [];
+  static const List<String> _defaultCategories = [
+    "CUSTO FIXO",
+    "LAZER",
+    "SAÚDE"
+  ];
 
   TransactionEntryModel({
+    required this.id,
     required this.description,
     required this.amount,
     required this.startDate,
@@ -45,6 +51,7 @@ class TransactionEntryModel {
     }
 
     return TransactionEntryModel(
+        id: entity.id!,
         description: entity.description,
         amount: amount,
         startDate: entity.startDate,

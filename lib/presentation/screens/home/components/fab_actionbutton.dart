@@ -35,7 +35,7 @@ class FabActionButton extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             child: FloatingActionButton.extended(
                 heroTag: heroTag,
-                backgroundColor: ThemeColors.pink,
+                backgroundColor: ThemeColors.blue,
                 label: Text(label),
                 onPressed: onPressed,
                 icon: icon)));

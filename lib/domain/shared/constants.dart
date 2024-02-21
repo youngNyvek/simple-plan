@@ -1,3 +1,3 @@
 class Constants {
-  static const String addPlanLabel = "Novo Plano";
+  static const String addPlanLabel = "Nova Transação";
 }

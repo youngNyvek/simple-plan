@@ -12,8 +12,8 @@ class CategoriesRow extends StatelessWidget {
             .map((item) => Row(children: [
                   Text(
                     item.toUpperCase(),
-                    style: const TextStyle(
-                        color: Colors.white,
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.3),
                         fontSize: 10,
                         fontWeight: FontWeight.bold),
                   ),
@@ -21,9 +21,11 @@ class CategoriesRow extends StatelessWidget {
                     width: 4,
                   ),
                   categories.last != item
-                      ? const Row(children: [
-                          Text("•", style: TextStyle(color: Colors.white)),
-                          SizedBox(width: 4)
+                      ? Row(children: [
+                          Text("•",
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(0.2))),
+                          const SizedBox(width: 4)
                         ])
                       : const SizedBox.shrink()
                 ]))
