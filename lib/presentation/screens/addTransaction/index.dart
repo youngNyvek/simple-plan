@@ -5,10 +5,17 @@ import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
-const List<String> list = <String>[
+const List<String> recurrenceList = <String>[
   'Sem recorrência',
   'Fixo mensal',
   'Parcelado'
+];
+
+const List<String> categoryList = <String>[
+  'Custo Fixo',
+  'Lazer',
+  'Conforto',
+  'Liberdade Finânceira'
 ];
 
 const dropdowMenuItem = [
@@ -35,7 +42,7 @@ class _AddTransactionState extends State<AddTransaction> {
   int? occurenceType = OccurrenceType.income.id;
   String amount = "0,00";
   DateTime selectedDate = DateTime.now();
-  String dropdownValue = list.first;
+  String dropdownValue = recurrenceList.first;
   int installmentValue = 12;
 
   @override
@@ -59,7 +66,7 @@ class _AddTransactionState extends State<AddTransaction> {
 
   void decrementInstallment() {
     setState(() {
-      if (installmentValue > 0) {
+      if (installmentValue > 1) {
         installmentValue--;
       }
     });
@@ -133,7 +140,7 @@ class _AddTransactionState extends State<AddTransaction> {
                     decoration: const InputDecoration(
                         icon: Icon(
                           Icons.monetization_on,
-                          color: ThemeColors.pink,
+                          color: ThemeColors.blue,
                         ),
                         labelText: 'Quantia *',
                         contentPadding: EdgeInsets.symmetric(horizontal: 8),
@@ -145,93 +152,157 @@ class _AddTransactionState extends State<AddTransaction> {
                   const SizedBox(
                     height: 16,
                   ),
-                  Row(children: [
-                    const Icon(
-                      Icons.sync,
-                      color: ThemeColors.pink,
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Flexible(
-                        flex: 1,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            DropdownButtonFormField(
-                              value: list.first,
-                              dropdownColor: ThemeColors.darkGray,
-                              decoration: const InputDecoration(
-                                  hintText: "", border: InputBorder.none),
-                              onChanged: (String? value) {
-                                // This is called when the user selects an item.
-                                setState(() {
-                                  dropdownValue = value!;
-                                });
-                              },
-                              items: list.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    ));
-                              }).toList(),
-                            ),
-                            dropdownValue == "Parcelado"
-                                ? Row(
-                                    children: [
-                                      Text(
-                                        "$amount de",
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                      IconButton(
-                                          onPressed: decrementInstallment,
-                                          icon: Icon(
-                                            Icons.remove,
-                                            color: ThemeColors.blue,
-                                          )),
-                                      Text(
-                                        "$installmentValue",
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                      IconButton(
-                                          onPressed: incrementInstallment,
-                                          icon: Icon(
-                                            Icons.add,
-                                            color: ThemeColors.blue,
-                                          ))
-                                    ],
-                                  )
-                                : const SizedBox.shrink()
-                          ],
-                        ))
-                  ]),
-                  const SizedBox(height: 16),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.calendar_month,
-                        color: ThemeColors.pink,
+                      Text(
+                        "Recorrência",
+                        style: TextStyle(
+                            color: ThemeColors.white.withOpacity(0.5)),
                       ),
-                      const SizedBox(
-                        width: 16,
+                      Row(children: [
+                        const Icon(
+                          Icons.sync,
+                          color: ThemeColors.blue,
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Flexible(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                DropdownButtonFormField(
+                                  value: recurrenceList.first,
+                                  dropdownColor: ThemeColors.darkGray,
+                                  decoration: const InputDecoration(
+                                      hintText: "", border: InputBorder.none),
+                                  onChanged: (String? value) {
+                                    // This is called when the user selects an item.
+                                    setState(() {
+                                      dropdownValue = value!;
+                                    });
+                                  },
+                                  items: recurrenceList
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ));
+                                  }).toList(),
+                                ),
+                                dropdownValue == "Parcelado"
+                                    ? Row(
+                                        children: [
+                                          Text(
+                                            "$amount de",
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                          IconButton(
+                                              onPressed: decrementInstallment,
+                                              icon: Icon(
+                                                Icons.remove,
+                                                color: ThemeColors.blue,
+                                              )),
+                                          Text(
+                                            "$installmentValue",
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                          IconButton(
+                                              onPressed: incrementInstallment,
+                                              icon: Icon(
+                                                Icons.add,
+                                                color: ThemeColors.blue,
+                                              ))
+                                        ],
+                                      )
+                                    : const SizedBox.shrink()
+                              ],
+                            ))
+                      ])
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Data de vencimento",
+                        style: TextStyle(
+                            color: ThemeColors.white.withOpacity(0.5)),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Row(
                         children: [
-                          const Text(
-                            "Data",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          const Icon(
+                            Icons.calendar_month,
+                            color: ThemeColors.blue,
                           ),
-                          Text(
-                            "${DateFormat.yMd().format(selectedDate)}",
-                            style: const TextStyle(color: Colors.white),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${DateFormat.yMd().format(selectedDate)}",
+                                style: const TextStyle(color: Colors.white),
+                              )
+                            ],
                           )
+                        ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Categorias",
+                        style: TextStyle(
+                            color: ThemeColors.white.withOpacity(0.5)),
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.category,
+                            color: ThemeColors.blue,
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Flexible(
+                              child: DropdownButtonFormField(
+                            value: categoryList.first,
+                            dropdownColor: ThemeColors.darkGray,
+                            decoration: const InputDecoration(
+                                hintText: "", border: InputBorder.none),
+                            onChanged: (String? value) {
+                              // This is called when the user selects an item.
+                              setState(() {
+                                dropdownValue = value!;
+                              });
+                            },
+                            items: categoryList
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                    style: const TextStyle(color: Colors.white),
+                                  ));
+                            }).toList(),
+                          ))
                         ],
                       )
                     ],
