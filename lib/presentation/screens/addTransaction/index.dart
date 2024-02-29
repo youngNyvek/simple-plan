@@ -19,6 +19,8 @@ const List<String> categoryList = <String>[
   'Liberdade Finânceira'
 ];
 
+const requiredField = "Obrigatório";
+
 const dropdowMenuItem = [
   DropdownMenuItem<String>(
       value: "Sem recorrência", child: Text("Sem recorrência")),
@@ -40,10 +42,13 @@ class _AddTransactionState extends State<AddTransaction> {
   final _formKey = GlobalKey<FormState>();
   final f = DateFormat("dd/MM/yyyy");
 
-  DateTime currentDate = DateTime.now();
   TextEditingController dateController = TextEditingController();
+
+  DateTime currentDate = DateTime.now();
+
   int? occurenceType = OccurrenceType.income.id;
   String amount = "0,00";
+  String description = "";
   String recurrenceValue = recurrenceList.first;
   String categoryValue = recurrenceList.first;
   int installmentValue = 12;
@@ -56,6 +61,12 @@ class _AddTransactionState extends State<AddTransaction> {
         lastDate: DateTime(currentDate.year + 10));
 
     if (picked != null) setState(() => dateController.text = f.format(picked));
+  }
+
+  void updateDescription(value) {
+    setState(() {
+      description = value;
+    });
   }
 
   void updateAmount(value) {
@@ -78,13 +89,28 @@ class _AddTransactionState extends State<AddTransaction> {
     });
   }
 
+  void submitForm() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Processing Data')),
+      );
+    }
+  }
+
   _AddTransactionState() {
     dateController.text = f.format(currentDate);
   }
 
   @override
+  void dispose() {
+    dateController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: ThemeColors.blue,
           title: const Text('Nova transação'),
@@ -147,6 +173,39 @@ class _AddTransactionState extends State<AddTransaction> {
                   child: Column(
                     children: [
                       TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return requiredField;
+                          }
+                          return null;
+                        },
+                        cursorColor: ThemeColors.blue,
+                        onChanged: (value) => {updateDescription(value)},
+                        decoration: InputDecoration(
+                            icon: const Icon(
+                              Icons.description,
+                              color: ThemeColors.blue,
+                            ),
+                            labelText: 'Descrição *',
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 8),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: ThemeColors.blue)),
+                            labelStyle: TextStyle(
+                                color: Colors.white.withOpacity(0.5))),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return requiredField;
+                          }
+                          return null;
+                        },
                         cursorColor: ThemeColors.blue,
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
@@ -329,20 +388,11 @@ class _AddTransactionState extends State<AddTransaction> {
                           )
                         ],
                       ),
+                      const SizedBox(height: 16),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Validate returns true if the form is valid, or false otherwise.
-                            if (_formKey.currentState!.validate()) {
-                              // If the form is valid, display a snackbar. In the real world,
-                              // you'd often call a server or save the information in a database.
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Processing Data')),
-                              );
-                            }
-                          },
+                          onPressed: submitForm,
                           child: const Text(
                             'Criar nova transação',
                             style: TextStyle(color: ThemeColors.blue),
