@@ -35,9 +35,6 @@ class AddTransaction extends StatefulWidget {
   State<AddTransaction> createState() => _AddTransactionState();
 }
 
-// Create a corresponding State class.
-// This class holds data related to the form.
-
 class _AddTransactionState extends State<AddTransaction> {
   final _formKey = GlobalKey<FormState>();
   final f = DateFormat("dd/MM/yyyy");
