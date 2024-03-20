@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_database.dart';
+import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_model.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
@@ -91,6 +93,37 @@ class _AddTransactionState extends State<AddTransaction> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Processing Data')),
       );
+
+      var dateSplitted = dateController.text.split("/");
+
+      var monthPlanId = "${dateSplitted[1]}:${dateSplitted[2]}";
+
+      try {
+        TransactionEntryDataBase().insert(TransactionEntryModel(
+            done: false,
+            startDate: DateTime(int.parse(dateSplitted[2]),
+                int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
+            description: description,
+            amount:
+                double.parse(amount.replaceAll('.', ' ').replaceAll(',', '.')),
+            occurrenceType: occurenceType!,
+            monthlyPlanId: monthPlanId,
+            categories: ["Teste", "Teste"]));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Registro inserido com sucecsso!"),
+            backgroundColor: ThemeColors.green,
+          ),
+        );
+      } catch (err) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(err.toString()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

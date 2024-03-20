@@ -1,16 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
-import 'package:simple_plan/domain/model/transaction_entry_model.dart';
+import 'package:path/path.dart';
+import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_database.dart';
+import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_model.dart';
 import 'package:simple_plan/presentation/screens/home/components/expandable_fab.dart';
 import 'package:simple_plan/domain/shared/enum/months.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
-import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/presentation/screens/home/components/monthDetails/index.dart';
-import 'package:simple_plan/presentation/screens/home/components/transactionCard/amount_row.dart';
-import 'package:simple_plan/presentation/screens/home/components/transactionCard/categories_row.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/index.dart';
 
 class Home extends StatefulWidget {
@@ -30,67 +26,15 @@ class _HomeState extends State<Home> {
   late double _currentIncomes = 0;
   late double _incomes = 0;
   late String _monthKey;
+  late List<TransactionEntryModel> mockTransactionLists = [];
 
-  late List<TransactionEntryModel> mockTransactionLists;
-
-  _HomeState() {
-    _selectedMonth = _now.month;
-    _selectedYear = _now.year;
-    mockTransactionLists = [
-      TransactionEntryModel.fromEntity(
-          TransactionEntryEntity(
-              id: 1,
-              description: 'Acâdemia',
-              amount: 159,
-              startDate: DateTime(2024, 1, 1),
-              occurrenceType: 2,
-              done: true,
-              monthlyPlanId: '1:2024',
-              createdAt: DateTime(2024, 1, 1)),
-          _selectedMonth,
-          _selectedYear),
-      TransactionEntryModel.fromEntity(
-          TransactionEntryEntity(
-              id: 1,
-              description: 'LUZ',
-              amount: 250,
-              startDate: DateTime(2024, 1, 1),
-              occurrenceType: 2,
-              done: false,
-              monthlyPlanId: '1:2024',
-              createdAt: DateTime(2024, 1, 1)),
-          _selectedMonth,
-          _selectedYear),
-      TransactionEntryModel.fromEntity(
-          TransactionEntryEntity(
-              id: 1,
-              description: 'Salário',
-              amount: 6000,
-              startDate: DateTime(2024, 1, 1),
-              occurrenceType: 1,
-              done: true,
-              monthlyPlanId: '1:2024',
-              createdAt: DateTime(2024, 1, 1)),
-          _selectedMonth,
-          _selectedYear),
-      TransactionEntryModel.fromEntity(
-          TransactionEntryEntity(
-              id: 1,
-              description: 'Bico que fiz',
-              amount: 300,
-              startDate: DateTime(2024, 1, 1),
-              occurrenceType: 1,
-              done: false,
-              monthlyPlanId: '1:2024',
-              createdAt: DateTime(2024, 1, 1)),
-          _selectedMonth,
-          _selectedYear)
-    ];
-
-    final filteredExpenses = mockTransactionLists.where(
+  Future<void> setupList() async {
+    var returnedList = await TransactionEntryDataBase().list();
+    mockTransactionLists.addAll(returnedList);
+    final filteredExpenses = returnedList.where(
         (element) => element.occurrenceType == OccurrenceType.expense.id);
 
-    final filteredIncomes = mockTransactionLists
+    final filteredIncomes = returnedList
         .where((element) => element.occurrenceType == OccurrenceType.income.id);
 
     if (filteredExpenses.isNotEmpty) {
@@ -120,6 +64,13 @@ class _HomeState extends State<Home> {
             .reduce((value, element) => value + element);
       }
     }
+  }
+
+  _HomeState() {
+    _selectedMonth = _now.month;
+    _selectedYear = _now.year;
+
+    setupList();
   }
 
   void changeFloatingState() {
