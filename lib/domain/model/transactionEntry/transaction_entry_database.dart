@@ -17,7 +17,10 @@ class TransactionEntryDataBase {
     await isar.writeTxn(() => isar.transactionEntryModels.put(model));
   }
 
-  Future<List<TransactionEntryModel>> list() async {
-    return await isar.txn(() => isar.transactionEntryModels.where().findAll());
+  Future<List<TransactionEntryModel>> list(String monthKey) async {
+    return await isar.txn(() => isar.transactionEntryModels
+        .filter()
+        .monthlyPlanIdEqualTo(monthKey)
+        .findAll());
   }
 }

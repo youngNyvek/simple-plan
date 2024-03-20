@@ -49,7 +49,7 @@ class _AddTransactionState extends State<AddTransaction> {
   String amount = "0,00";
   String description = "";
   String recurrenceValue = recurrenceList.first;
-  String categoryValue = recurrenceList.first;
+  String categoryValue = categoryList.first;
   int installmentValue = 12;
 
   Future _selectDate() async {
@@ -90,13 +90,16 @@ class _AddTransactionState extends State<AddTransaction> {
 
   void submitForm() {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Processing Data')),
-      );
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(content: Text('Processing Data')),
+        );
 
       var dateSplitted = dateController.text.split("/");
 
-      var monthPlanId = "${dateSplitted[1]}:${dateSplitted[2]}";
+      var monthPlanId =
+          "${int.parse(dateSplitted[1])}:${int.parse(dateSplitted[2])}";
 
       try {
         TransactionEntryDataBase().insert(TransactionEntryModel(
@@ -105,24 +108,28 @@ class _AddTransactionState extends State<AddTransaction> {
                 int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
             description: description,
             amount:
-                double.parse(amount.replaceAll('.', ' ').replaceAll(',', '.')),
+                double.parse(amount.replaceAll('.', '').replaceAll(',', '.')),
             occurrenceType: occurenceType!,
             monthlyPlanId: monthPlanId,
-            categories: ["Teste", "Teste"]));
+            categories: [categoryValue]));
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Registro inserido com sucecsso!"),
-            backgroundColor: ThemeColors.green,
-          ),
-        );
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text("Registro inserido com sucecsso!"),
+              backgroundColor: ThemeColors.green,
+            ),
+          );
       } catch (err) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(err.toString()),
-            backgroundColor: Colors.red,
-          ),
-        );
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(err.toString()),
+              backgroundColor: Colors.red,
+            ),
+          );
       }
     }
   }

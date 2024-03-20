@@ -19,57 +19,58 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool _floatingButtonIsOpened = false;
   final _now = DateTime.now();
-  late int _selectedMonth;
-  late int _selectedYear;
+  late int _selectedMonth = _now.month;
+  late int _selectedYear = _now.year;
   late double _expenses = 0;
   late double _currentExpenses = 0;
   late double _currentIncomes = 0;
   late double _incomes = 0;
-  late String _monthKey;
-  late List<TransactionEntryModel> mockTransactionLists = [];
+  late String _monthKey = "$_selectedMonth:$_selectedYear";
+  late List<TransactionEntryModel> transactionList = [];
 
   Future<void> setupList() async {
-    var returnedList = await TransactionEntryDataBase().list();
-    mockTransactionLists.addAll(returnedList);
-    final filteredExpenses = returnedList.where(
+    var returnedList = await TransactionEntryDataBase().list(_monthKey);
+    var filteredExpenses = returnedList.where(
         (element) => element.occurrenceType == OccurrenceType.expense.id);
 
-    final filteredIncomes = returnedList
+    var filteredIncomes = returnedList
         .where((element) => element.occurrenceType == OccurrenceType.income.id);
 
-    if (filteredExpenses.isNotEmpty) {
-      _expenses = filteredExpenses
-          .map((element) => element.amount)
-          .reduce((value, element) => value + element);
-
-      final doneExpenses = filteredExpenses.where((element) => element.done);
-
-      if (doneExpenses.isNotEmpty) {
-        _currentExpenses = doneExpenses
+    setState(() {
+      transactionList = returnedList;
+      if (filteredExpenses.isNotEmpty) {
+        _expenses = filteredExpenses
             .map((element) => element.amount)
             .reduce((value, element) => value + element);
+
+        var doneExpenses = filteredExpenses.where((element) => element.done);
+
+        if (doneExpenses.isNotEmpty) {
+          _currentExpenses = doneExpenses
+              .map((element) => element.amount)
+              .reduce((value, element) => value + element);
+        }
       }
-    }
 
-    if (filteredIncomes.isNotEmpty) {
-      _incomes = filteredIncomes
-          .map((element) => element.amount)
-          .reduce((value, element) => value + element);
-
-      final doneIncomes = filteredIncomes.where((element) => element.done);
-
-      if (doneIncomes.isNotEmpty) {
-        _currentIncomes = doneIncomes
+      if (filteredIncomes.isNotEmpty) {
+        _incomes = filteredIncomes
             .map((element) => element.amount)
             .reduce((value, element) => value + element);
+
+        var doneIncomes = filteredIncomes.where((element) => element.done);
+
+        if (doneIncomes.isNotEmpty) {
+          _currentIncomes = doneIncomes
+              .map((element) => element.amount)
+              .reduce((value, element) => value + element);
+        }
       }
-    }
+    });
   }
 
-  _HomeState() {
-    _selectedMonth = _now.month;
-    _selectedYear = _now.year;
-
+  @override
+  void initState() {
+    super.initState();
     setupList();
   }
 
@@ -79,10 +80,11 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void changeMonthKey() {
+  void changeMonthKey() async {
     setState(() {
       _monthKey = "$_selectedMonth:$_selectedYear";
     });
+    setupList();
   }
 
   void handlePreviousMonth() {
@@ -169,7 +171,7 @@ class _HomeState extends State<Home> {
         child: ListView(
           // This next line does the trick.
           scrollDirection: Axis.vertical,
-          children: mockTransactionLists
+          children: transactionList
               .map((item) => Column(
                     children: [
                       TransactionCard(

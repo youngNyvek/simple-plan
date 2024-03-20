@@ -30,4 +30,9 @@ class TransactionEntryModel {
     this.currentInstallment,
     this.finalInstallment,
   });
+
+  @override
+  String toString() {
+    return 'TransactionEntryModel{id: $id, description: $description, amount: $amount, startDate: $startDate, occurrenceType: $occurrenceType, done: $done, finishDate: $finishDate, monthlyPlanId: $monthlyPlanId, currentInstallment: $currentInstallment, finalInstallment: $finalInstallment, categories: $categories}';
+  }
 }

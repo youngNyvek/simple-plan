@@ -49,17 +49,17 @@ class OccurrenceDetails extends StatelessWidget {
           StringUtils.formatCurrency(currentValue),
           style: const TextStyle(color: Colors.white, fontSize: 14),
         ),
-        // Text(
-        //   _expectedLabel,
-        //   style: TextStyle(
-        //       color: primaryColor.withOpacity(0.7),
-        //       fontWeight: FontWeight.bold,
-        //       fontSize: 10),
-        // ),
-        // Text(
-        //   StringUtils.formatCurrency(expectedValue),
-        //   style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
-        // ),
+        Text(
+          _expectedLabel,
+          style: TextStyle(
+              color: primaryColor.withOpacity(0.7),
+              fontWeight: FontWeight.bold,
+              fontSize: 10),
+        ),
+        Text(
+          StringUtils.formatCurrency(expectedValue),
+          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
+        ),
       ],
     );
   }
