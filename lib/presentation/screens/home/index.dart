@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_database.dart';
@@ -113,6 +115,10 @@ class _HomeState extends State<Home> {
     changeMonthKey();
   }
 
+  FutureOr onGoBack(dynamic value) async {
+    await setupList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,7 +132,7 @@ class _HomeState extends State<Home> {
               incomes: _incomes),
           cashFlowByMonth()
         ])),
-        floatingActionButton: const ExpandableFab());
+        floatingActionButton: ExpandableFab(onGoBack: onGoBack));
   }
 
   Widget selectedMonth() {

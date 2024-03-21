@@ -88,7 +88,7 @@ class _AddTransactionState extends State<AddTransaction> {
     });
   }
 
-  void submitForm() {
+  Future<void> submitForm() async {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
@@ -102,7 +102,7 @@ class _AddTransactionState extends State<AddTransaction> {
           "${int.parse(dateSplitted[1])}:${int.parse(dateSplitted[2])}";
 
       try {
-        TransactionEntryDataBase().insert(TransactionEntryModel(
+        await TransactionEntryDataBase().insert(TransactionEntryModel(
             done: false,
             startDate: DateTime(int.parse(dateSplitted[2]),
                 int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
@@ -113,6 +113,8 @@ class _AddTransactionState extends State<AddTransaction> {
             monthlyPlanId: monthPlanId,
             categories: [categoryValue]));
 
+        if (!context.mounted) return;
+
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
           ..showSnackBar(
@@ -121,6 +123,8 @@ class _AddTransactionState extends State<AddTransaction> {
               backgroundColor: ThemeColors.green,
             ),
           );
+
+        Navigator.pop(context);
       } catch (err) {
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
