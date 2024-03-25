@@ -5,6 +5,17 @@ import 'package:path_provider/path_provider.dart';
 class TransactionEntryDataBase {
   static late Isar isar;
 
+  Future<T> executeInTransactionWithResult<T>(
+      Future<T> Function() function) async {
+    return await isar.writeTxn(function);
+  }
+
+  Future<void> executeInTransaction(Future<void> Function() function) async {
+    await isar.writeTxn<void>(() async {
+      await function();
+    });
+  }
+
   Future<void> initialize() async {
     final dir = await getApplicationDocumentsDirectory();
     isar = (await Isar.open(
@@ -18,9 +29,9 @@ class TransactionEntryDataBase {
   }
 
   Future<List<TransactionEntryModel>> list(String monthKey) async {
-    return await isar.txn(() => isar.transactionEntryModels
+    return isar.transactionEntryModels
         .filter()
         .monthlyPlanIdEqualTo(monthKey)
-        .findAll());
+        .findAll();
   }
 }

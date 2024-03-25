@@ -17,6 +17,8 @@ class TransactionEntryModel {
   final int? currentInstallment;
   final int? finalInstallment;
   final List<String> categories;
+  final int recurrenceType;
+  final int? transactionBaseId;
 
   TransactionEntryModel({
     required this.description,
@@ -26,9 +28,11 @@ class TransactionEntryModel {
     required this.done,
     required this.monthlyPlanId,
     required this.categories,
+    required this.recurrenceType,
     this.finishDate,
     this.currentInstallment,
     this.finalInstallment,
+    this.transactionBaseId,
   });
 
   @override

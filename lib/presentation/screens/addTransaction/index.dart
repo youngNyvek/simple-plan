@@ -6,13 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_database.dart';
 import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_model.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
+import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
-
-const List<String> recurrenceList = <String>[
-  'Sem recorrência',
-  'Fixo mensal',
-  'Parcelado'
-];
+import 'package:simple_plan/domain/useCases/insertTransactionEntryUseCase.dart';
 
 const List<String> categoryList = <String>[
   'Custo Fixo',
@@ -40,6 +36,8 @@ class AddTransaction extends StatefulWidget {
 class _AddTransactionState extends State<AddTransaction> {
   final _formKey = GlobalKey<FormState>();
   final f = DateFormat("dd/MM/yyyy");
+  final insertTransactionUseCase = InsertTransactionEntryUseCase();
+  final recurrenceList = RecurrenceType.recurrenceList;
 
   TextEditingController dateController = TextEditingController();
 
@@ -48,7 +46,7 @@ class _AddTransactionState extends State<AddTransaction> {
   int? occurenceType = OccurrenceType.income.id;
   String amount = "0,00";
   String description = "";
-  String recurrenceValue = recurrenceList.first;
+  int recurrenceValue = RecurrenceType.none.id;
   String categoryValue = categoryList.first;
   int installmentValue = 12;
 
@@ -102,7 +100,7 @@ class _AddTransactionState extends State<AddTransaction> {
           "${int.parse(dateSplitted[1])}:${int.parse(dateSplitted[2])}";
 
       try {
-        await TransactionEntryDataBase().insert(TransactionEntryModel(
+        await insertTransactionUseCase.execute(TransactionEntryModel(
             done: false,
             startDate: DateTime(int.parse(dateSplitted[2]),
                 int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
@@ -111,6 +109,7 @@ class _AddTransactionState extends State<AddTransaction> {
                 double.parse(amount.replaceAll('.', '').replaceAll(',', '.')),
             occurrenceType: occurenceType!,
             monthlyPlanId: monthPlanId,
+            recurrenceType: recurrenceValue,
             categories: [categoryValue]));
 
         if (!context.mounted) return;
@@ -294,7 +293,7 @@ class _AddTransactionState extends State<AddTransaction> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     DropdownButtonFormField(
-                                      value: recurrenceList.first,
+                                      value: recurrenceList.first.description,
                                       dropdownColor: ThemeColors.darkGray,
                                       decoration: const InputDecoration(
                                           hintText: "",
@@ -302,16 +301,18 @@ class _AddTransactionState extends State<AddTransaction> {
                                       onChanged: (String? value) {
                                         // This is called when the user selects an item.
                                         setState(() {
-                                          recurrenceValue = value!;
+                                          recurrenceValue = RecurrenceType
+                                                  .getRecurrenceByDesc(value!)
+                                              .id;
                                         });
                                       },
                                       items: recurrenceList
                                           .map<DropdownMenuItem<String>>(
-                                              (String value) {
+                                              (RecurrenceType value) {
                                         return DropdownMenuItem<String>(
-                                            value: value,
+                                            value: value.description,
                                             child: Text(
-                                              value,
+                                              value.description,
                                               style: const TextStyle(
                                                   color: Colors.white),
                                             ));

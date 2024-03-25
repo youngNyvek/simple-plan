@@ -63,10 +63,20 @@ const TransactionEntryModelSchema = CollectionSchema(
       name: r'occurrenceType',
       type: IsarType.long,
     ),
-    r'startDate': PropertySchema(
+    r'recurrenceType': PropertySchema(
       id: 9,
+      name: r'recurrenceType',
+      type: IsarType.long,
+    ),
+    r'startDate': PropertySchema(
+      id: 10,
       name: r'startDate',
       type: IsarType.dateTime,
+    ),
+    r'transactionBaseId': PropertySchema(
+      id: 11,
+      name: r'transactionBaseId',
+      type: IsarType.long,
     )
   },
   estimateSize: _transactionEntryModelEstimateSize,
@@ -116,7 +126,9 @@ void _transactionEntryModelSerialize(
   writer.writeDateTime(offsets[6], object.finishDate);
   writer.writeString(offsets[7], object.monthlyPlanId);
   writer.writeLong(offsets[8], object.occurrenceType);
-  writer.writeDateTime(offsets[9], object.startDate);
+  writer.writeLong(offsets[9], object.recurrenceType);
+  writer.writeDateTime(offsets[10], object.startDate);
+  writer.writeLong(offsets[11], object.transactionBaseId);
 }
 
 TransactionEntryModel _transactionEntryModelDeserialize(
@@ -135,7 +147,9 @@ TransactionEntryModel _transactionEntryModelDeserialize(
     finishDate: reader.readDateTimeOrNull(offsets[6]),
     monthlyPlanId: reader.readString(offsets[7]),
     occurrenceType: reader.readLong(offsets[8]),
-    startDate: reader.readDateTime(offsets[9]),
+    recurrenceType: reader.readLong(offsets[9]),
+    startDate: reader.readDateTime(offsets[10]),
+    transactionBaseId: reader.readLongOrNull(offsets[11]),
   );
   object.id = id;
   return object;
@@ -167,7 +181,11 @@ P _transactionEntryModelDeserializeProp<P>(
     case 8:
       return (reader.readLong(offset)) as P;
     case 9:
+      return (reader.readLong(offset)) as P;
+    case 10:
       return (reader.readDateTime(offset)) as P;
+    case 11:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1184,6 +1202,62 @@ extension TransactionEntryModelQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> recurrenceTypeEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'recurrenceType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> recurrenceTypeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'recurrenceType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> recurrenceTypeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'recurrenceType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> recurrenceTypeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'recurrenceType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
       QAfterFilterCondition> startDateEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1231,6 +1305,80 @@ extension TransactionEntryModelQueryFilter on QueryBuilder<
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'startDate',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> transactionBaseIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'transactionBaseId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> transactionBaseIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'transactionBaseId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> transactionBaseIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'transactionBaseId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> transactionBaseIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'transactionBaseId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> transactionBaseIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'transactionBaseId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> transactionBaseIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'transactionBaseId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1361,6 +1509,20 @@ extension TransactionEntryModelQuerySortBy
   }
 
   QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
+      sortByRecurrenceType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'recurrenceType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
+      sortByRecurrenceTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'recurrenceType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
       sortByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.asc);
@@ -1371,6 +1533,20 @@ extension TransactionEntryModelQuerySortBy
       sortByStartDateDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
+      sortByTransactionBaseId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBaseId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
+      sortByTransactionBaseIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBaseId', Sort.desc);
     });
   }
 }
@@ -1504,6 +1680,20 @@ extension TransactionEntryModelQuerySortThenBy
   }
 
   QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
+      thenByRecurrenceType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'recurrenceType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
+      thenByRecurrenceTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'recurrenceType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
       thenByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.asc);
@@ -1514,6 +1704,20 @@ extension TransactionEntryModelQuerySortThenBy
       thenByStartDateDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
+      thenByTransactionBaseId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBaseId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QAfterSortBy>
+      thenByTransactionBaseIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transactionBaseId', Sort.desc);
     });
   }
 }
@@ -1585,9 +1789,23 @@ extension TransactionEntryModelQueryWhereDistinct
   }
 
   QueryBuilder<TransactionEntryModel, TransactionEntryModel, QDistinct>
+      distinctByRecurrenceType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'recurrenceType');
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QDistinct>
       distinctByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'startDate');
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QDistinct>
+      distinctByTransactionBaseId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'transactionBaseId');
     });
   }
 }
@@ -1662,10 +1880,24 @@ extension TransactionEntryModelQueryProperty on QueryBuilder<
     });
   }
 
+  QueryBuilder<TransactionEntryModel, int, QQueryOperations>
+      recurrenceTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'recurrenceType');
+    });
+  }
+
   QueryBuilder<TransactionEntryModel, DateTime, QQueryOperations>
       startDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'startDate');
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, int?, QQueryOperations>
+      transactionBaseIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'transactionBaseId');
     });
   }
 }
