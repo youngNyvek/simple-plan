@@ -26,10 +26,16 @@ class DynamicTransactionEntryAdapter extends IsarInstance {
     });
   }
 
-  Future<void> insert(DynamicTransactionEntryModel model) async {
+  Future<void> insertDynamic(DynamicTransactionEntryModel model) async {
     var db = await isar;
 
     await db.dynamicTransactionEntryModels.put(model);
+  }
+
+  Future<int> insertFixed(FixedTransactionEntryModel model) async {
+    var db = await isar;
+
+    return await db.fixedTransactionEntryModels.put(model);
   }
 
   Future<List<DynamicTransactionEntryModel>> listDynamics(

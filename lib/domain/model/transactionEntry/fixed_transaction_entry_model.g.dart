@@ -43,13 +43,8 @@ const FixedTransactionEntryModelSchema = CollectionSchema(
       name: r'occurrenceType',
       type: IsarType.long,
     ),
-    r'recurrenceType': PropertySchema(
-      id: 5,
-      name: r'recurrenceType',
-      type: IsarType.long,
-    ),
     r'startDate': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'startDate',
       type: IsarType.dateTime,
     )
@@ -96,8 +91,7 @@ void _fixedTransactionEntryModelSerialize(
   writer.writeString(offsets[2], object.description);
   writer.writeDateTime(offsets[3], object.finishDate);
   writer.writeLong(offsets[4], object.occurrenceType);
-  writer.writeLong(offsets[5], object.recurrenceType);
-  writer.writeDateTime(offsets[6], object.startDate);
+  writer.writeDateTime(offsets[5], object.startDate);
 }
 
 FixedTransactionEntryModel _fixedTransactionEntryModelDeserialize(
@@ -112,8 +106,7 @@ FixedTransactionEntryModel _fixedTransactionEntryModelDeserialize(
     description: reader.readString(offsets[2]),
     finishDate: reader.readDateTimeOrNull(offsets[3]),
     occurrenceType: reader.readLong(offsets[4]),
-    recurrenceType: reader.readLong(offsets[5]),
-    startDate: reader.readDateTime(offsets[6]),
+    startDate: reader.readDateTime(offsets[5]),
   );
   object.id = id;
   return object;
@@ -137,8 +130,6 @@ P _fixedTransactionEntryModelDeserializeProp<P>(
     case 4:
       return (reader.readLong(offset)) as P;
     case 5:
-      return (reader.readLong(offset)) as P;
-    case 6:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -860,62 +851,6 @@ extension FixedTransactionEntryModelQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
-      QAfterFilterCondition> recurrenceTypeEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'recurrenceType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
-      QAfterFilterCondition> recurrenceTypeGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'recurrenceType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
-      QAfterFilterCondition> recurrenceTypeLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'recurrenceType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
-      QAfterFilterCondition> recurrenceTypeBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'recurrenceType',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
       QAfterFilterCondition> startDateEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1037,20 +972,6 @@ extension FixedTransactionEntryModelQuerySortBy on QueryBuilder<
   }
 
   QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
-      QAfterSortBy> sortByRecurrenceType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'recurrenceType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
-      QAfterSortBy> sortByRecurrenceTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'recurrenceType', Sort.desc);
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
       QAfterSortBy> sortByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.asc);
@@ -1138,20 +1059,6 @@ extension FixedTransactionEntryModelQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
-      QAfterSortBy> thenByRecurrenceType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'recurrenceType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
-      QAfterSortBy> thenByRecurrenceTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'recurrenceType', Sort.desc);
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
       QAfterSortBy> thenByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.asc);
@@ -1204,13 +1111,6 @@ extension FixedTransactionEntryModelQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
-      QDistinct> distinctByRecurrenceType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'recurrenceType');
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, FixedTransactionEntryModel,
       QDistinct> distinctByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'startDate');
@@ -1258,13 +1158,6 @@ extension FixedTransactionEntryModelQueryProperty on QueryBuilder<
       occurrenceTypeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'occurrenceType');
-    });
-  }
-
-  QueryBuilder<FixedTransactionEntryModel, int, QQueryOperations>
-      recurrenceTypeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'recurrenceType');
     });
   }
 

@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:simple_plan/domain/model/transactionEntry/fixed_transaction_entry_model.dart';
 
 part 'dynamic_transaction_entry_model.g.dart';
 
@@ -19,7 +20,7 @@ class DynamicTransactionEntryModel {
   final List<String> categories;
   final int recurrenceType;
   final int? transactionBaseId;
-  final int? fixedTransactionId;
+  late final int? fixedTransactionId;
 
   DynamicTransactionEntryModel({
     required this.description,
@@ -36,6 +37,15 @@ class DynamicTransactionEntryModel {
     this.transactionBaseId,
     this.fixedTransactionId,
   });
+
+  FixedTransactionEntryModel toFixedEntry() {
+    return FixedTransactionEntryModel(
+        description: description,
+        amount: amount,
+        startDate: startDate,
+        occurrenceType: occurrenceType,
+        categories: categories);
+  }
 
   @override
   String toString() {

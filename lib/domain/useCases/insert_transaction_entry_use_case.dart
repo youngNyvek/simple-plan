@@ -9,8 +9,12 @@ class InsertDynamicTransactionEntryUseCase {
   Future<void> execute(DynamicTransactionEntryModel model) async {
     transactionDb.executeInTransaction(() async {
       if (model.recurrenceType == RecurrenceType.every.id) {
-        await transactionDb.insert(model);
-      } else if (model.recurrenceType == RecurrenceType.none.id) {}
+        var fixedId = await transactionDb.insertFixed(model.toFixedEntry());
+        model.fixedTransactionId = fixedId;
+        await transactionDb.insertDynamic(model);
+      } else if (model.recurrenceType == RecurrenceType.none.id) {
+        await transactionDb.insertDynamic(model);
+      }
     });
   }
 }
