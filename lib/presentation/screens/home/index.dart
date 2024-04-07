@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_database.dart';
-import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_model.dart';
+import 'package:simple_plan/domain/adapters/transaction_entry_adapter.dart';
+import 'package:simple_plan/domain/model/transactionEntry/dynamic_transaction_entry_model.dart';
 import 'package:simple_plan/presentation/screens/home/components/expandable_fab.dart';
 import 'package:simple_plan/domain/shared/enum/months.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
@@ -28,10 +27,11 @@ class _HomeState extends State<Home> {
   late double _currentIncomes = 0;
   late double _incomes = 0;
   late String _monthKey = "$_selectedMonth:$_selectedYear";
-  late List<TransactionEntryModel> transactionList = [];
+  late List<DynamicTransactionEntryModel> transactionList = [];
 
   Future<void> setupList() async {
-    var returnedList = await TransactionEntryDataBase().list(_monthKey);
+    var returnedList =
+        await DynamicTransactionEntryAdapter().listDynamics(_monthKey);
     var filteredExpenses = returnedList.where(
         (element) => element.occurrenceType == OccurrenceType.expense.id);
 

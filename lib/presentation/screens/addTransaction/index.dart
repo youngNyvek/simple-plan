@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_database.dart';
-import 'package:simple_plan/domain/model/transactionEntry/transaction_entry_model.dart';
+import 'package:simple_plan/domain/model/transactionEntry/dynamic_transaction_entry_model.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
@@ -36,7 +33,7 @@ class AddTransaction extends StatefulWidget {
 class _AddTransactionState extends State<AddTransaction> {
   final _formKey = GlobalKey<FormState>();
   final f = DateFormat("dd/MM/yyyy");
-  final insertTransactionUseCase = InsertTransactionEntryUseCase();
+  final insertTransactionUseCase = InsertDynamicTransactionEntryUseCase();
   final recurrenceList = RecurrenceType.recurrenceList;
 
   TextEditingController dateController = TextEditingController();
@@ -49,6 +46,7 @@ class _AddTransactionState extends State<AddTransaction> {
   int recurrenceValue = RecurrenceType.none.id;
   String categoryValue = categoryList.first;
   int installmentValue = 12;
+  Color primaryColor = ThemeColors.green;
 
   Future _selectDate() async {
     DateTime? picked = await showDatePicker(
@@ -86,6 +84,18 @@ class _AddTransactionState extends State<AddTransaction> {
     });
   }
 
+  void updateOccurrenceType(int? value) {
+    setState(() {
+      occurenceType = value;
+
+      if (value == OccurrenceType.income.id) {
+        primaryColor = ThemeColors.green;
+      } else if (value == OccurrenceType.expense.id) {
+        primaryColor = ThemeColors.red;
+      }
+    });
+  }
+
   Future<void> submitForm() async {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
@@ -100,7 +110,7 @@ class _AddTransactionState extends State<AddTransaction> {
           "${int.parse(dateSplitted[1])}:${int.parse(dateSplitted[2])}";
 
       try {
-        await insertTransactionUseCase.execute(TransactionEntryModel(
+        await insertTransactionUseCase.execute(DynamicTransactionEntryModel(
             done: false,
             startDate: DateTime(int.parse(dateSplitted[2]),
                 int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
@@ -152,7 +162,7 @@ class _AddTransactionState extends State<AddTransaction> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: ThemeColors.blue,
+          backgroundColor: primaryColor,
           title: const Text('Nova transação'),
         ),
         body: Form(
@@ -177,32 +187,24 @@ class _AddTransactionState extends State<AddTransaction> {
                             child: RadioListTile(
                               contentPadding: EdgeInsets.zero,
                               fillColor: MaterialStateColor.resolveWith(
-                                  (states) => ThemeColors.blue),
+                                  (states) => primaryColor),
                               title: Text(OccurrenceType.income.description,
                                   style: const TextStyle(color: Colors.white)),
                               value: OccurrenceType.income.id,
                               groupValue: occurenceType,
-                              onChanged: (int? value) {
-                                setState(() {
-                                  occurenceType = value;
-                                });
-                              },
+                              onChanged: updateOccurrenceType,
                             ),
                           ),
                           Flexible(
                               child: RadioListTile(
                             contentPadding: EdgeInsets.zero,
                             fillColor: MaterialStateColor.resolveWith(
-                                (states) => ThemeColors.blue),
+                                (states) => primaryColor),
                             title: Text(OccurrenceType.expense.description,
                                 style: const TextStyle(color: Colors.white)),
                             value: OccurrenceType.expense.id,
                             groupValue: occurenceType,
-                            onChanged: (int? value) {
-                              setState(() {
-                                occurenceType = value;
-                              });
-                            },
+                            onChanged: updateOccurrenceType,
                           ))
                         ],
                       )
@@ -219,19 +221,18 @@ class _AddTransactionState extends State<AddTransaction> {
                           }
                           return null;
                         },
-                        cursorColor: ThemeColors.blue,
+                        cursorColor: primaryColor,
                         onChanged: (value) => {updateDescription(value)},
                         decoration: InputDecoration(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.description,
-                              color: ThemeColors.blue,
+                              color: primaryColor,
                             ),
                             labelText: 'Descrição *',
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 8),
-                            focusedBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: ThemeColors.blue)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: primaryColor)),
                             labelStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.5))),
                         style: const TextStyle(color: Colors.white),
@@ -246,7 +247,7 @@ class _AddTransactionState extends State<AddTransaction> {
                           }
                           return null;
                         },
-                        cursorColor: ThemeColors.blue,
+                        cursorColor: primaryColor,
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
@@ -254,16 +255,15 @@ class _AddTransactionState extends State<AddTransaction> {
                         ],
                         onChanged: (value) => {updateAmount(value)},
                         decoration: InputDecoration(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.monetization_on,
-                              color: ThemeColors.blue,
+                              color: primaryColor,
                             ),
                             labelText: 'Quantia *',
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 8),
-                            focusedBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: ThemeColors.blue)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: primaryColor)),
                             labelStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.5))),
                         style: const TextStyle(color: Colors.white),
@@ -280,9 +280,9 @@ class _AddTransactionState extends State<AddTransaction> {
                                 color: ThemeColors.white.withOpacity(0.5)),
                           ),
                           Row(children: [
-                            const Icon(
+                            Icon(
                               Icons.sync,
-                              color: ThemeColors.blue,
+                              color: primaryColor,
                             ),
                             const SizedBox(
                               width: 16,
@@ -329,9 +329,9 @@ class _AddTransactionState extends State<AddTransaction> {
                                               IconButton(
                                                   onPressed:
                                                       decrementInstallment,
-                                                  icon: const Icon(
+                                                  icon: Icon(
                                                     Icons.remove,
-                                                    color: ThemeColors.blue,
+                                                    color: primaryColor,
                                                   )),
                                               Text(
                                                 "$installmentValue",
@@ -341,9 +341,9 @@ class _AddTransactionState extends State<AddTransaction> {
                                               IconButton(
                                                   onPressed:
                                                       incrementInstallment,
-                                                  icon: const Icon(
+                                                  icon: Icon(
                                                     Icons.add,
-                                                    color: ThemeColors.blue,
+                                                    color: primaryColor,
                                                   ))
                                             ],
                                           )
@@ -358,7 +358,7 @@ class _AddTransactionState extends State<AddTransaction> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextFormField(
-                            cursorColor: ThemeColors.blue,
+                            cursorColor: primaryColor,
                             controller: dateController,
                             onTap: _selectDate,
                             readOnly: true,
@@ -369,15 +369,15 @@ class _AddTransactionState extends State<AddTransaction> {
                                       color:
                                           ThemeColors.white.withOpacity(0.5)),
                                 ),
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.calendar_month,
-                                  color: ThemeColors.blue,
+                                  color: primaryColor,
                                 ),
                                 contentPadding:
                                     const EdgeInsets.symmetric(horizontal: 8),
-                                focusedBorder: const OutlineInputBorder(
+                                focusedBorder: OutlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: ThemeColors.blue)),
+                                        BorderSide(color: primaryColor)),
                                 labelStyle: TextStyle(
                                     color: Colors.white.withOpacity(0.5))),
                             style: const TextStyle(color: Colors.white),
@@ -395,9 +395,9 @@ class _AddTransactionState extends State<AddTransaction> {
                           ),
                           Row(
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.category,
-                                color: ThemeColors.blue,
+                                color: primaryColor,
                               ),
                               const SizedBox(
                                 width: 16,
@@ -435,9 +435,9 @@ class _AddTransactionState extends State<AddTransaction> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         child: ElevatedButton(
                           onPressed: submitForm,
-                          child: const Text(
+                          child: Text(
                             'Criar nova transação',
-                            style: TextStyle(color: ThemeColors.blue),
+                            style: TextStyle(color: primaryColor),
                           ),
                         ),
                       ),

@@ -1,11 +1,11 @@
 import 'package:isar/isar.dart';
 
-part 'transaction_entry_model.g.dart';
+part 'dynamic_transaction_entry_model.g.dart';
 
 const List<String> _defaultCategories = ["CUSTO FIXO", "LAZER", "SAÚDE"];
 
 @Collection()
-class TransactionEntryModel {
+class DynamicTransactionEntryModel {
   Id id = Isar.autoIncrement;
   final String description;
   final double amount;
@@ -19,8 +19,9 @@ class TransactionEntryModel {
   final List<String> categories;
   final int recurrenceType;
   final int? transactionBaseId;
+  final int? fixedTransactionId;
 
-  TransactionEntryModel({
+  DynamicTransactionEntryModel({
     required this.description,
     required this.amount,
     required this.startDate,
@@ -33,10 +34,11 @@ class TransactionEntryModel {
     this.currentInstallment,
     this.finalInstallment,
     this.transactionBaseId,
+    this.fixedTransactionId,
   });
 
   @override
   String toString() {
-    return 'TransactionEntryModel{id: $id, description: $description, amount: $amount, startDate: $startDate, occurrenceType: $occurrenceType, done: $done, finishDate: $finishDate, monthlyPlanId: $monthlyPlanId, currentInstallment: $currentInstallment, finalInstallment: $finalInstallment, categories: $categories}';
+    return 'DynamicTransactionEntryModel{id: $id, description: $description, amount: $amount, startDate: $startDate, occurrenceType: $occurrenceType, done: $done, finishDate: $finishDate, monthlyPlanId: $monthlyPlanId, currentInstallment: $currentInstallment, finalInstallment: $finalInstallment, categories: $categories}';
   }
 }
