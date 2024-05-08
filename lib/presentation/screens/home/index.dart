@@ -32,6 +32,10 @@ class _HomeState extends State<Home> {
   Future<void> setupList() async {
     var returnedList =
         await DynamicTransactionEntryAdapter().listDynamics(_monthKey);
+
+    var returnedList2 =
+        await DynamicTransactionEntryAdapter().listFixeds(_monthKey);
+
     var filteredExpenses = returnedList.where(
         (element) => element.occurrenceType == OccurrenceType.expense.id);
 

@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:simple_plan/domain/model/transactionEntry/fixed_transaction_entry_model.dart';
+import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 
 part 'dynamic_transaction_entry_model.g.dart';
 
@@ -20,7 +22,7 @@ class DynamicTransactionEntryModel {
   final List<String> categories;
   final int recurrenceType;
   final int? transactionBaseId;
-  late final int? fixedTransactionId;
+  late int? fixedTransactionId;
 
   DynamicTransactionEntryModel({
     required this.description,
@@ -39,12 +41,22 @@ class DynamicTransactionEntryModel {
   });
 
   FixedTransactionEntryModel toFixedEntry() {
+    DateTime? finishDate;
+
+    if (recurrenceType == RecurrenceType.installment.id) {
+      finishDate = DateUtils.addMonthsToMonthDate(
+          DateTime.utc(startDate.year, startDate.month, startDate.day),
+          finalInstallment!);
+    }
+
     return FixedTransactionEntryModel(
         description: description,
         amount: amount,
         startDate: startDate,
         occurrenceType: occurrenceType,
-        categories: categories);
+        recurrenceType: recurrenceType,
+        categories: categories,
+        finishDate: finishDate);
   }
 
   @override

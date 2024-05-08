@@ -13,6 +13,7 @@ class FixedTransactionEntryModel {
   final int occurrenceType;
   final DateTime? finishDate;
   final List<String> categories;
+  late final int recurrenceType;
 
   FixedTransactionEntryModel(
       {required this.description,
@@ -20,6 +21,7 @@ class FixedTransactionEntryModel {
       required this.startDate,
       required this.occurrenceType,
       required this.categories,
+      required this.recurrenceType,
       this.finishDate});
 
   @override

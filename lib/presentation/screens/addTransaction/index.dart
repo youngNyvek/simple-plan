@@ -5,7 +5,7 @@ import 'package:simple_plan/domain/model/transactionEntry/dynamic_transaction_en
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
-import 'package:simple_plan/domain/useCases/insertTransactionEntryUseCase.dart';
+import 'package:simple_plan/domain/useCases/insert_transaction_entry_use_case.dart';
 
 const List<String> categoryList = <String>[
   'Custo Fixo',
@@ -33,7 +33,7 @@ class AddTransaction extends StatefulWidget {
 class _AddTransactionState extends State<AddTransaction> {
   final _formKey = GlobalKey<FormState>();
   final f = DateFormat("dd/MM/yyyy");
-  final insertTransactionUseCase = InsertDynamicTransactionEntryUseCase();
+  final insertTransactionUseCase = InsertTransactionEntryUseCase();
   final recurrenceList = RecurrenceType.recurrenceList;
 
   TextEditingController dateController = TextEditingController();
@@ -112,7 +112,7 @@ class _AddTransactionState extends State<AddTransaction> {
       try {
         await insertTransactionUseCase.execute(DynamicTransactionEntryModel(
             done: false,
-            startDate: DateTime(int.parse(dateSplitted[2]),
+            startDate: DateTime.utc(int.parse(dateSplitted[2]),
                 int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
             description: description,
             amount:
@@ -120,6 +120,9 @@ class _AddTransactionState extends State<AddTransaction> {
             occurrenceType: occurenceType!,
             monthlyPlanId: monthPlanId,
             recurrenceType: recurrenceValue,
+            finalInstallment: recurrenceValue == RecurrenceType.installment.id
+                ? installmentValue
+                : null,
             categories: [categoryValue]));
 
         if (!context.mounted) return;
@@ -318,7 +321,8 @@ class _AddTransactionState extends State<AddTransaction> {
                                             ));
                                       }).toList(),
                                     ),
-                                    recurrenceValue == "Parcelado"
+                                    recurrenceValue ==
+                                            RecurrenceType.installment.id
                                         ? Row(
                                             children: [
                                               Text(
