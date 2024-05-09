@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:simple_plan/domain/adapters/transaction_entry_adapter.dart';
-import 'package:simple_plan/domain/model/transactionEntry/dynamic_transaction_entry_model.dart';
+import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
+import 'package:simple_plan/adapters/transactionEntryAdapter/models/dynamic_transaction_entry_model.dart';
+import 'package:simple_plan/domain/useCases/list_transactions_use_case.dart';
 import 'package:simple_plan/presentation/screens/home/components/expandable_fab.dart';
 import 'package:simple_plan/domain/shared/enum/months.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
@@ -18,8 +19,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool _floatingButtonIsOpened = false;
   final _now = DateTime.now();
+  final listTransactionsUseCase = ListTransactionsUseCase();
+
+  bool _floatingButtonIsOpened = false;
   late int _selectedMonth = _now.month;
   late int _selectedYear = _now.year;
   late double _expenses = 0;
@@ -30,11 +33,7 @@ class _HomeState extends State<Home> {
   late List<DynamicTransactionEntryModel> transactionList = [];
 
   Future<void> setupList() async {
-    var returnedList =
-        await DynamicTransactionEntryAdapter().listDynamics(_monthKey);
-
-    var returnedList2 =
-        await DynamicTransactionEntryAdapter().listFixeds(_monthKey);
+    var returnedList = await listTransactionsUseCase.execute(_monthKey);
 
     var filteredExpenses = returnedList.where(
         (element) => element.occurrenceType == OccurrenceType.expense.id);

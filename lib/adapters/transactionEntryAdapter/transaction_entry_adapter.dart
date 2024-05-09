@@ -1,7 +1,8 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:simple_plan/domain/model/transactionEntry/dynamic_transaction_entry_model.dart';
-import 'package:simple_plan/domain/model/transactionEntry/fixed_transaction_entry_model.dart';
+import 'package:simple_plan/adapters/transactionEntryAdapter/models/dynamic_transaction_entry_model.dart';
+import 'package:simple_plan/adapters/transactionEntryAdapter/models/fixed_transaction_entry_model.dart';
+import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
 
 class DynamicTransactionEntryAdapter {
   static late Isar db;
@@ -24,19 +25,23 @@ class DynamicTransactionEntryAdapter {
     });
   }
 
-  Future<void> insertDynamic(DynamicTransactionEntryModel model) async {
+  Future<void> insertDynamic(TransactionEntryEntity entity) async {
+    var model = DynamicTransactionEntryModel.fromEntity(entity);
+
     await db.dynamicTransactionEntryModels.put(model);
   }
 
-  Future<int> insertFixed(FixedTransactionEntryModel model) async {
+  Future<int> insertFixed(TransactionEntryEntity entity) async {
+    var model = FixedTransactionEntryModel.fromEntity(entity);
+
     return await db.fixedTransactionEntryModels.put(model);
   }
 
   Future<List<DynamicTransactionEntryModel>> listDynamics(
-      String monthKey) async {
+      DateTime lowerDate, DateTime upperDate) async {
     return db.dynamicTransactionEntryModels
         .filter()
-        .monthlyPlanIdEqualTo(monthKey)
+        .startDateBetween(lowerDate, upperDate)
         .findAll();
   }
 

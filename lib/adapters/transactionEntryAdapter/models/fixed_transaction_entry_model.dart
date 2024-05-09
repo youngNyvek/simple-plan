@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
 
 part 'fixed_transaction_entry_model.g.dart';
 
@@ -23,6 +24,15 @@ class FixedTransactionEntryModel {
       required this.categories,
       required this.recurrenceType,
       this.finishDate});
+
+  FixedTransactionEntryModel.fromEntity(TransactionEntryEntity entity)
+      : description = entity.description,
+        amount = entity.amount,
+        startDate = entity.startDate,
+        occurrenceType = entity.occurrenceType,
+        categories = entity.categories,
+        recurrenceType = entity.recurrenceType,
+        finishDate = entity.finishDate;
 
   @override
   String toString() {

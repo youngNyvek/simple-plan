@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:simple_plan/domain/model/transactionEntry/dynamic_transaction_entry_model.dart';
+import 'package:simple_plan/adapters/transactionEntryAdapter/models/dynamic_transaction_entry_model.dart';
+import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
@@ -110,7 +111,7 @@ class _AddTransactionState extends State<AddTransaction> {
           "${int.parse(dateSplitted[1])}:${int.parse(dateSplitted[2])}";
 
       try {
-        await insertTransactionUseCase.execute(DynamicTransactionEntryModel(
+        await insertTransactionUseCase.execute(TransactionEntryEntity(
             done: false,
             startDate: DateTime.utc(int.parse(dateSplitted[2]),
                 int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
@@ -118,7 +119,6 @@ class _AddTransactionState extends State<AddTransaction> {
             amount:
                 double.parse(amount.replaceAll('.', '').replaceAll(',', '.')),
             occurrenceType: occurenceType!,
-            monthlyPlanId: monthPlanId,
             recurrenceType: recurrenceValue,
             finalInstallment: recurrenceValue == RecurrenceType.installment.id
                 ? installmentValue
