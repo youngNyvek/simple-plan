@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
-import 'package:simple_plan/adapters/transactionEntryAdapter/models/dynamic_transaction_entry_model.dart';
+import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
 import 'package:simple_plan/domain/useCases/list_transactions_use_case.dart';
 import 'package:simple_plan/presentation/screens/home/components/expandable_fab.dart';
 import 'package:simple_plan/domain/shared/enum/months.dart';
@@ -30,7 +29,7 @@ class _HomeState extends State<Home> {
   late double _currentIncomes = 0;
   late double _incomes = 0;
   late String _monthKey = "$_selectedMonth:$_selectedYear";
-  late List<DynamicTransactionEntryModel> transactionList = [];
+  late List<TransactionEntryEntity> transactionList = [];
 
   Future<void> setupList() async {
     var returnedList = await listTransactionsUseCase.execute(_monthKey);
@@ -188,9 +187,8 @@ class _HomeState extends State<Home> {
                           done: item.done,
                           amount: item.amount,
                           categories: item.categories,
-                          currentInstallment: item.currentInstallment,
                           description: item.description,
-                          finalInstallment: item.finalInstallment,
+                          installment: item.installment,
                           occurrenceType: item.occurrenceType),
                       const SizedBox(
                         height: 22,

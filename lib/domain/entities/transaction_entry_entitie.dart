@@ -2,30 +2,29 @@ class TransactionEntryEntity {
   final int? id;
   final String description;
   final double amount;
-  final DateTime startDate;
+  final DateTime dueDate;
   final int occurrenceType;
   final bool done;
-  final DateTime? finishDate;
-  final int? currentInstallment;
-  final int? finalInstallment;
+  late final DateTime? finalDate;
+  final int? installment;
   final List<String> categories;
   final int recurrenceType;
-  final int? transactionBaseId;
-  late int? fixedTransactionId;
 
   TransactionEntryEntity({
     required this.description,
     required this.amount,
-    required this.startDate,
+    required this.dueDate,
     required this.occurrenceType,
     required this.done,
     required this.categories,
     required this.recurrenceType,
+    this.finalDate,
     this.id,
-    this.finishDate,
-    this.currentInstallment,
-    this.finalInstallment,
-    this.transactionBaseId,
-    this.fixedTransactionId,
-  });
+    this.installment,
+  }) {
+    if (installment != null && finalDate == null) {
+      finalDate =
+          DateTime(dueDate.year, dueDate.month + installment!, dueDate.day);
+    }
+  }
 }

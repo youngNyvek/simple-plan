@@ -11,7 +11,7 @@ class TransactionCard extends StatelessWidget {
   final String description;
   final double amount;
   final int? currentInstallment;
-  final int? finalInstallment;
+  final int? installment;
   final bool done;
 
   const TransactionCard(
@@ -21,7 +21,7 @@ class TransactionCard extends StatelessWidget {
       required this.description,
       required this.amount,
       this.currentInstallment,
-      this.finalInstallment,
+      this.installment,
       required this.done});
 
   @override
@@ -60,7 +60,7 @@ class TransactionCard extends StatelessWidget {
                 AmountRow(
                     amount: amount,
                     currentInstallment: currentInstallment,
-                    finalInstallment: finalInstallment)
+                    finalInstallment: installment)
               ],
             ))
       ]),

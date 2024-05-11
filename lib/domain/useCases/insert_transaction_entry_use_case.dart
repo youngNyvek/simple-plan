@@ -8,11 +8,7 @@ class InsertTransactionEntryUseCase {
 
   Future<void> execute(TransactionEntryEntity entity) async {
     transactionDb.executeInTransaction(() async {
-      if (entity.recurrenceType != RecurrenceType.none.id) {
-        await transactionDb.insertFixed(entity);
-      } else {
-        await transactionDb.insertDynamic(entity);
-      }
+      await transactionDb.insertTransaction(entity);
     });
   }
 }
