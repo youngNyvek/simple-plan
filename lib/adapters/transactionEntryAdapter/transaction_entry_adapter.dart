@@ -39,9 +39,15 @@ class DynamicTransactionEntryAdapter {
         .group((q) => q
             .recurrenceTypeEqualTo(RecurrenceType.installment.id)
             .and()
-            .finalDateEqualTo(upperDate)
-            .or()
-            .finalDateGreaterThan(upperDate))
+            .group((q) => q
+                .dueDateLessThan(lowerDate)
+                .or()
+                .dueDateBetween(lowerDate, upperDate))
+            .and()
+            .group((q) => q
+                .finalDateBetween(lowerDate, upperDate)
+                .or()
+                .finalDateGreaterThan(upperDate)))
         .or()
         .group((q) => q
             .recurrenceTypeEqualTo(RecurrenceType.none.id)

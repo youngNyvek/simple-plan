@@ -42,17 +42,16 @@ class TransactionEntryModel {
 
   TransactionEntryEntity toEntity() {
     return TransactionEntryEntity(
-      id: id,
-      finalDate: finalDate,
-      installment: installment,
-      description: description,
-      amount: amount,
-      dueDate: dueDate,
-      occurrenceType: occurrenceType,
-      done: done,
-      categories: categories,
-      recurrenceType: recurrenceType,
-    );
+        id: id,
+        installment: installment,
+        description: description,
+        amount: amount,
+        dueDate: dueDate,
+        occurrenceType: occurrenceType,
+        done: done,
+        categories: categories,
+        recurrenceType: recurrenceType,
+        finalDate: finalDate);
   }
 
   @override

@@ -189,6 +189,8 @@ class _HomeState extends State<Home> {
                           categories: item.categories,
                           description: item.description,
                           installment: item.installment,
+                          currentInstallment: item.getCurrentInstallment(
+                              DateTime(_selectedYear, _selectedMonth, 1)),
                           occurrenceType: item.occurrenceType),
                       const SizedBox(
                         height: 22,
