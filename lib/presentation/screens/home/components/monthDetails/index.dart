@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 import 'package:simple_plan/presentation/screens/home/components/monthDetails/occurrence_details.dart';
 
