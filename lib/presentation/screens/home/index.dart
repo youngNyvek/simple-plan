@@ -72,6 +72,14 @@ class _HomeState extends State<Home> {
     });
   }
 
+  // void navigateToAddTransaction() {
+  //   Navigator.push(
+  //           context, MaterialPageRoute(builder: (context) => TelaDeDetalhes()))
+  //       .then((dadosAtualizados) {
+  //     setupList();
+  //   });
+  // }
+
   @override
   void initState() {
     super.initState();
@@ -117,7 +125,7 @@ class _HomeState extends State<Home> {
     changeMonthKey();
   }
 
-  FutureOr onGoBack(dynamic value) async {
+  FutureOr onGoBack() async {
     await setupList();
   }
 

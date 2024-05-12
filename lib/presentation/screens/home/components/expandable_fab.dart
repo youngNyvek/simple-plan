@@ -6,7 +6,7 @@ import 'package:simple_plan/domain/shared/constants.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
 class ExpandableFab extends StatefulWidget {
-  final FutureOr Function(Object?) onGoBack;
+  final FutureOr Function() onGoBack;
 
   const ExpandableFab({super.key, required this.onGoBack});
 
@@ -44,7 +44,9 @@ class _ExpandableFabState extends State<ExpandableFab> {
               onPressed: () => {
                     _toggle(),
                     Navigator.pushNamed(context, '/addTransaction')
-                        .then(widget.onGoBack)
+                        .then((dadosAtualizados) {
+                      widget.onGoBack();
+                    })
                   }),
           FabActionButton(
               isOpen: _open,
