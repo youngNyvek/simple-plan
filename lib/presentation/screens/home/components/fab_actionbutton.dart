@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/shared/utils/theme_colors.dart';
+import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
 class FabActionButton extends StatelessWidget {
   final bool isOpen;
@@ -35,7 +35,7 @@ class FabActionButton extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             child: FloatingActionButton.extended(
                 heroTag: heroTag,
-                backgroundColor: ThemeColors.pink,
+                backgroundColor: ThemeColors.blue,
                 label: Text(label),
                 onPressed: onPressed,
                 icon: icon)));
