@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
@@ -72,14 +73,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-  // void navigateToAddTransaction() {
-  //   Navigator.push(
-  //           context, MaterialPageRoute(builder: (context) => TelaDeDetalhes()))
-  //       .then((dadosAtualizados) {
-  //     setupList();
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -125,10 +118,6 @@ class _HomeState extends State<Home> {
     changeMonthKey();
   }
 
-  FutureOr onGoBack() async {
-    await setupList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,7 +131,7 @@ class _HomeState extends State<Home> {
               incomes: _incomes),
           cashFlowByMonth()
         ])),
-        floatingActionButton: ExpandableFab(onGoBack: onGoBack));
+        floatingActionButton: ExpandableFab(onGoBack: setupList));
   }
 
   Widget selectedMonth() {
@@ -188,22 +177,28 @@ class _HomeState extends State<Home> {
           // This next line does the trick.
           scrollDirection: Axis.vertical,
           children: transactionList
-              .map((item) => Column(
-                    children: [
-                      TransactionCard(
-                          key: Key("${item.id}"),
-                          done: item.done,
-                          amount: item.amount,
-                          categories: item.categories,
-                          description: item.description,
-                          installment: item.installment,
-                          currentInstallment: item.getCurrentInstallment(
-                              DateTime(_selectedYear, _selectedMonth, 1)),
-                          occurrenceType: item.occurrenceType),
-                      const SizedBox(
-                        height: 22,
-                      ),
-                    ],
+              .map((item) => InkWell(
+                    onTap: () => Navigator.pushNamed(context, '/details')
+                        .then((dadosAtualizados) {
+                      setupList();
+                    }),
+                    child: Column(
+                      children: [
+                        TransactionCard(
+                            key: Key("${item.id}"),
+                            done: item.done,
+                            amount: item.amount,
+                            categories: item.categories,
+                            description: item.description,
+                            installment: item.installment,
+                            currentInstallment: item.getCurrentInstallment(
+                                DateTime(_selectedYear, _selectedMonth, 1)),
+                            occurrenceType: item.occurrenceType),
+                        const SizedBox(
+                          height: 22,
+                        ),
+                      ],
+                    ),
                   ))
               .toList(),
         ));

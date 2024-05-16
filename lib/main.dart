@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
 import 'package:simple_plan/presentation/screens/addTransaction/index.dart';
+import 'package:simple_plan/presentation/screens/details/index.dart';
 import 'package:simple_plan/presentation/screens/home/index.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
           textTheme: GoogleFonts.poppinsTextTheme()),
       routes: {
         '/': (context) => const Home(),
-        '/addTransaction': (context) => const AddTransaction()
+        '/addTransaction': (context) => const AddTransaction(),
+        '/details': (context) => const DetailScreen()
       },
     );
   }
