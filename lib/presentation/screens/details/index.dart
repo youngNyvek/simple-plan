@@ -1,21 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
+import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
+import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
+import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
 const List<String> categoryList = <String>[
   'Custo Fixo',
   'Lazer',
-  'Conforto',
-  'Liberdade Finânceira',
-  'Liberdade Finânceira',
-  'Liberdade Finânceira',
-  'Liberdade Finânceira',
-  'Liberdade Finânceira',
 ];
 
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key});
+  final TransactionEntryEntity transactionEntryEntity;
+  final DateTime selectedDate;
+  final f = DateFormat("dd/MM/yyyy");
+
+  late Color primaryColor;
+
+  DetailScreen(
+      {super.key,
+      required this.transactionEntryEntity,
+      required this.selectedDate}) {
+    if (transactionEntryEntity.occurrenceType == OccurrenceType.income.id) {
+      primaryColor = ThemeColors.green;
+    } else {
+      primaryColor = ThemeColors.red;
+    }
+  }
+
   static const detailScreenFormType = 2;
 
   @override
@@ -23,27 +38,26 @@ class DetailScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: ThemeColors.blue,
+        backgroundColor: primaryColor,
         title: const Text("Detalhes da transação"),
       ),
       body: Container(
-        margin: EdgeInsets.only(top: 42),
+        margin: const EdgeInsets.only(top: 42),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Wrap(
-              children: categoryList
+              children: transactionEntryEntity.categories
                   .map((item) => Container(
                         decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 2, color: ThemeColors.redAlpha),
+                            border: Border.all(width: 2, color: primaryColor),
                             borderRadius: BorderRadius.circular(4)),
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         margin: const EdgeInsets.all(4),
                         child: Text(
                           item.toUpperCase(),
                           style: TextStyle(
-                              color: ThemeColors.redAlpha,
+                              color: primaryColor,
                               fontSize: 10,
                               fontWeight: FontWeight.bold),
                         ),
@@ -51,29 +65,33 @@ class DetailScreen extends StatelessWidget {
                   .toList(),
             ),
             const SizedBox(height: 16),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "R\$ 500,00",
-                  style: TextStyle(color: Colors.white, fontSize: 24),
+                  StringUtils.formatCurrency(transactionEntryEntity.amount),
+                  style: const TextStyle(color: Colors.white, fontSize: 24),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Icon(Icons.arrow_circle_down_rounded,
-                    size: 28, color: ThemeColors.red)
+                    size: 28, color: primaryColor)
               ],
             ),
             const SizedBox(height: 16),
             Text(
-              "Parcela do carro 4/12",
-              style: TextStyle(color: ThemeColors.redAlpha, fontSize: 16),
+              transactionEntryEntity.installment != null
+                  ? "${transactionEntryEntity.description} ${transactionEntryEntity.getCurrentInstallment(selectedDate)}/${transactionEntryEntity.installment}"
+                  : transactionEntryEntity.description,
+              style: TextStyle(color: primaryColor, fontSize: 16),
             ),
             const SizedBox(height: 16),
             Column(
               children: [
-                const Text(
-                  "Fixo Mensal",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                Text(
+                  RecurrenceType.getRecurrenceById(
+                          transactionEntryEntity.recurrenceType)
+                      .description,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 Text(
                   "RECORRÊNCIA",
@@ -84,9 +102,9 @@ class DetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Column(
               children: [
-                const Text(
-                  "05/04/2024",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                Text(
+                  f.format(transactionEntryEntity.getDueDate(selectedDate)),
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 Text(
                   "VENCIMENTO",

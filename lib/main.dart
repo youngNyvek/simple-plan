@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Home(),
         '/addTransaction': (context) => const AddTransaction(),
-        '/details': (context) => const DetailScreen()
       },
     );
   }

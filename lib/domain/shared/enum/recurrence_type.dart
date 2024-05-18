@@ -13,4 +13,8 @@ class RecurrenceType {
   static RecurrenceType getRecurrenceByDesc(String desc) {
     return recurrenceList.firstWhere((item) => item.description == desc);
   }
+
+  static RecurrenceType getRecurrenceById(int id) {
+    return recurrenceList.firstWhere((item) => item.id == id);
+  }
 }
