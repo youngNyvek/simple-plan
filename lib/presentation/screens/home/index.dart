@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
 import 'package:simple_plan/domain/useCases/list_transactions_use_case.dart';
+import 'package:simple_plan/presentation/screens/details/index.dart';
 import 'package:simple_plan/presentation/screens/home/components/expandable_fab.dart';
 import 'package:simple_plan/domain/shared/enum/months.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
@@ -29,6 +31,7 @@ class _HomeState extends State<Home> {
   late double _currentIncomes = 0;
   late double _incomes = 0;
   late String _monthKey = "$_selectedMonth:$_selectedYear";
+  late DateTime selectedDate = DateTime(_selectedYear, _selectedMonth, 1);
   late List<TransactionEntryEntity> transactionList = [];
 
   Future<void> setupList() async {
@@ -72,14 +75,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-  // void navigateToAddTransaction() {
-  //   Navigator.push(
-  //           context, MaterialPageRoute(builder: (context) => TelaDeDetalhes()))
-  //       .then((dadosAtualizados) {
-  //     setupList();
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -107,6 +102,8 @@ class _HomeState extends State<Home> {
       } else {
         _selectedMonth = _selectedMonth - 1;
       }
+
+      selectedDate = DateTime(_selectedYear, _selectedMonth, 1);
     });
 
     changeMonthKey();
@@ -120,13 +117,11 @@ class _HomeState extends State<Home> {
       } else {
         _selectedMonth = _selectedMonth + 1;
       }
+
+      selectedDate = DateTime(_selectedYear, _selectedMonth, 1);
     });
 
     changeMonthKey();
-  }
-
-  FutureOr onGoBack() async {
-    await setupList();
   }
 
   @override
@@ -142,7 +137,7 @@ class _HomeState extends State<Home> {
               incomes: _incomes),
           cashFlowByMonth()
         ])),
-        floatingActionButton: ExpandableFab(onGoBack: onGoBack));
+        floatingActionButton: ExpandableFab(onGoBack: setupList));
   }
 
   Widget selectedMonth() {
@@ -188,22 +183,34 @@ class _HomeState extends State<Home> {
           // This next line does the trick.
           scrollDirection: Axis.vertical,
           children: transactionList
-              .map((item) => Column(
-                    children: [
-                      TransactionCard(
-                          key: Key("${item.id}"),
-                          done: item.done,
-                          amount: item.amount,
-                          categories: item.categories,
-                          description: item.description,
-                          installment: item.installment,
-                          currentInstallment: item.getCurrentInstallment(
-                              DateTime(_selectedYear, _selectedMonth, 1)),
-                          occurrenceType: item.occurrenceType),
-                      const SizedBox(
-                        height: 22,
+              .map((item) => InkWell(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailScreen(
+                            selectedDate: selectedDate,
+                            transactionEntryEntity: item),
                       ),
-                    ],
+                    ).then((dadosAtualizados) {
+                      setupList();
+                    }),
+                    child: Column(
+                      children: [
+                        TransactionCard(
+                            key: Key("${item.id}"),
+                            done: item.done,
+                            amount: item.amount,
+                            categories: item.categories,
+                            description: item.description,
+                            installment: item.installment,
+                            currentInstallment:
+                                item.getCurrentInstallment(selectedDate),
+                            occurrenceType: item.occurrenceType),
+                        const SizedBox(
+                          height: 22,
+                        ),
+                      ],
+                    ),
                   ))
               .toList(),
         ));

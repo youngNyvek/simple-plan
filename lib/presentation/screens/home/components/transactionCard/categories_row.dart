@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
 class CategoriesRow extends StatelessWidget {
   final List<String> categories;
@@ -13,7 +14,7 @@ class CategoriesRow extends StatelessWidget {
                   Text(
                     item.toUpperCase(),
                     style: TextStyle(
-                        color: Colors.white.withOpacity(0.3),
+                        color: ThemeColors.whiteAlpha,
                         fontSize: 10,
                         fontWeight: FontWeight.bold),
                   ),
@@ -23,8 +24,7 @@ class CategoriesRow extends StatelessWidget {
                   categories.last != item
                       ? Row(children: [
                           Text("•",
-                              style: TextStyle(
-                                  color: Colors.white.withOpacity(0.2))),
+                              style: TextStyle(color: ThemeColors.whiteAlpha)),
                           const SizedBox(width: 4)
                         ])
                       : const SizedBox.shrink()
