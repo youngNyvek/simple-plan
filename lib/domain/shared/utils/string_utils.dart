@@ -5,4 +5,8 @@ class StringUtils {
     return NumberFormat.simpleCurrency(locale: 'pt-BR', decimalDigits: 2)
         .format(n);
   }
+
+  static String getMonthKey(DateTime dateTime) {
+    return "${dateTime.month}:${dateTime.year}";
+  }
 }

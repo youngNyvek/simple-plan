@@ -9,6 +9,7 @@ class TransactionEntryEntity {
   final int? installment;
   final List<String> categories;
   final int recurrenceType;
+  final List<String>? excludedMonths;
 
   TransactionEntryEntity(
       {required this.description,
@@ -18,6 +19,7 @@ class TransactionEntryEntity {
       required this.done,
       required this.categories,
       required this.recurrenceType,
+      this.excludedMonths,
       this.id,
       this.installment,
       this.finalDate}) {
