@@ -1,8 +1,11 @@
+import 'dart:collection';
+
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:simple_plan/adapters/transactionEntryAdapter/models/transaction_entry_model.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
+import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 
 class DynamicTransactionEntryAdapter {
   static late Isar db;
@@ -29,8 +32,12 @@ class DynamicTransactionEntryAdapter {
 
   Future<List<TransactionEntryEntity>> listTransactions(
       DateTime lowerDate, DateTime upperDate) async {
+    var monthKey = StringUtils.getMonthKey(lowerDate);
     var transactions = await db.transactionEntryModels
         .filter()
+        .not()
+        .excludedMonthsElementContains(monthKey)
+        .and()
         .group((q) => q
             .recurrenceTypeEqualTo(RecurrenceType.every.id)
             .and()
@@ -58,5 +65,37 @@ class DynamicTransactionEntryAdapter {
         .findAll();
 
     return transactions.toEntity();
+  }
+
+  Future<void> deleteTransaction(int id) async {
+    await db.transactionEntryModels.deleteAll([id]);
+  }
+
+  Future<void> addExcludedMonth(int transactionId, String monthKey) async {
+    var transactionEntryModel =
+        await db.transactionEntryModels.get(transactionId);
+
+    if (transactionEntryModel == null) {
+      return;
+    }
+
+    TransactionEntryModel newTransactionEntryModel;
+
+    if (transactionEntryModel.excludedMonths != null) {
+      newTransactionEntryModel = transactionEntryModel
+        ..excludedMonths =
+            {...transactionEntryModel.excludedMonths!, monthKey}.toList();
+    } else {
+      newTransactionEntryModel = transactionEntryModel
+        ..excludedMonths = [monthKey];
+    }
+
+    await db.transactionEntryModels.put(newTransactionEntryModel);
+  }
+
+  Future<TransactionEntryEntity?> getTransaction(int transactionId) async {
+    var model = await db.transactionEntryModels.get(transactionId);
+
+    return model?.toEntity();
   }
 }

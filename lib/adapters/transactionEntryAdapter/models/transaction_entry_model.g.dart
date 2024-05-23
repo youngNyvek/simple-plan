@@ -43,23 +43,28 @@ const TransactionEntryModelSchema = CollectionSchema(
       name: r'dueDate',
       type: IsarType.dateTime,
     ),
-    r'finalDate': PropertySchema(
+    r'excludedMonths': PropertySchema(
       id: 5,
+      name: r'excludedMonths',
+      type: IsarType.stringList,
+    ),
+    r'finalDate': PropertySchema(
+      id: 6,
       name: r'finalDate',
       type: IsarType.dateTime,
     ),
     r'installment': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'installment',
       type: IsarType.long,
     ),
     r'occurrenceType': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'occurrenceType',
       type: IsarType.long,
     ),
     r'recurrenceType': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'recurrenceType',
       type: IsarType.long,
     )
@@ -92,6 +97,18 @@ int _transactionEntryModelEstimateSize(
     }
   }
   bytesCount += 3 + object.description.length * 3;
+  {
+    final list = object.excludedMonths;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
+    }
+  }
   return bytesCount;
 }
 
@@ -106,10 +123,11 @@ void _transactionEntryModelSerialize(
   writer.writeString(offsets[2], object.description);
   writer.writeBool(offsets[3], object.done);
   writer.writeDateTime(offsets[4], object.dueDate);
-  writer.writeDateTime(offsets[5], object.finalDate);
-  writer.writeLong(offsets[6], object.installment);
-  writer.writeLong(offsets[7], object.occurrenceType);
-  writer.writeLong(offsets[8], object.recurrenceType);
+  writer.writeStringList(offsets[5], object.excludedMonths);
+  writer.writeDateTime(offsets[6], object.finalDate);
+  writer.writeLong(offsets[7], object.installment);
+  writer.writeLong(offsets[8], object.occurrenceType);
+  writer.writeLong(offsets[9], object.recurrenceType);
 }
 
 TransactionEntryModel _transactionEntryModelDeserialize(
@@ -119,15 +137,16 @@ TransactionEntryModel _transactionEntryModelDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = TransactionEntryModel(
-    reader.readLongOrNull(offsets[6]),
+    reader.readLongOrNull(offsets[7]),
     reader.readString(offsets[2]),
     reader.readDouble(offsets[0]),
     reader.readDateTime(offsets[4]),
-    reader.readLong(offsets[7]),
+    reader.readLong(offsets[8]),
     reader.readBool(offsets[3]),
     reader.readStringList(offsets[1]) ?? [],
-    reader.readLong(offsets[8]),
-    reader.readDateTimeOrNull(offsets[5]),
+    reader.readLong(offsets[9]),
+    reader.readDateTimeOrNull(offsets[6]),
+    reader.readStringList(offsets[5]),
   );
   object.id = id;
   return object;
@@ -151,12 +170,14 @@ P _transactionEntryModelDeserializeProp<P>(
     case 4:
       return (reader.readDateTime(offset)) as P;
     case 5:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringList(offset)) as P;
     case 6:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 7:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 8:
+      return (reader.readLong(offset)) as P;
+    case 9:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -754,6 +775,252 @@ extension TransactionEntryModelQueryFilter on QueryBuilder<
         upper: upper,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'excludedMonths',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'excludedMonths',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'excludedMonths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'excludedMonths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'excludedMonths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'excludedMonths',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'excludedMonths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'excludedMonths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+          QAfterFilterCondition>
+      excludedMonthsElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'excludedMonths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+          QAfterFilterCondition>
+      excludedMonthsElementMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'excludedMonths',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'excludedMonths',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'excludedMonths',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'excludedMonths',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'excludedMonths',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'excludedMonths',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'excludedMonths',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'excludedMonths',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel,
+      QAfterFilterCondition> excludedMonthsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'excludedMonths',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1362,6 +1629,13 @@ extension TransactionEntryModelQueryWhereDistinct
   }
 
   QueryBuilder<TransactionEntryModel, TransactionEntryModel, QDistinct>
+      distinctByExcludedMonths() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'excludedMonths');
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, TransactionEntryModel, QDistinct>
       distinctByFinalDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'finalDate');
@@ -1429,6 +1703,13 @@ extension TransactionEntryModelQueryProperty on QueryBuilder<
       dueDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'dueDate');
+    });
+  }
+
+  QueryBuilder<TransactionEntryModel, List<String>?, QQueryOperations>
+      excludedMonthsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'excludedMonths');
     });
   }
 

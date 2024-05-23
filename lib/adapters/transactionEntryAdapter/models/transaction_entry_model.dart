@@ -16,6 +16,7 @@ class TransactionEntryModel {
   final int occurrenceType;
   final bool done;
   final List<String> categories;
+  List<String>? excludedMonths;
   final int recurrenceType;
 
   TransactionEntryModel(
@@ -27,7 +28,8 @@ class TransactionEntryModel {
       this.done,
       this.categories,
       this.recurrenceType,
-      this.finalDate);
+      this.finalDate,
+      this.excludedMonths);
 
   TransactionEntryModel.fromEntity(TransactionEntryEntity entity)
       : finalDate = entity.finalDate,
@@ -38,7 +40,8 @@ class TransactionEntryModel {
         occurrenceType = entity.occurrenceType,
         done = entity.done,
         categories = entity.categories,
-        recurrenceType = entity.recurrenceType;
+        recurrenceType = entity.recurrenceType,
+        excludedMonths = entity.excludedMonths;
 
   TransactionEntryEntity toEntity() {
     return TransactionEntryEntity(
@@ -51,12 +54,8 @@ class TransactionEntryModel {
         done: done,
         categories: categories,
         recurrenceType: recurrenceType,
+        excludedMonths: excludedMonths,
         finalDate: finalDate);
-  }
-
-  @override
-  String toString() {
-    return 'DynamicTransactionEntryModel{id: $id, description: $description, amount: $amount, occurrenceType: $occurrenceType, finishDate: $finalDate,  categories: $categories}';
   }
 }
 

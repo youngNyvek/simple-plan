@@ -3,35 +3,111 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
+import 'package:simple_plan/domain/shared/enum/delete_type.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
 
 const List<String> categoryList = <String>[
   'Custo Fixo',
   'Lazer',
 ];
 
-class DetailScreen extends StatelessWidget {
+class DetailScreen extends StatefulWidget {
   final TransactionEntryEntity transactionEntryEntity;
   final DateTime selectedDate;
-  final f = DateFormat("dd/MM/yyyy");
 
-  late Color primaryColor;
-
-  DetailScreen(
+  const DetailScreen(
       {super.key,
       required this.transactionEntryEntity,
-      required this.selectedDate}) {
-    if (transactionEntryEntity.occurrenceType == OccurrenceType.income.id) {
+      required this.selectedDate});
+
+  @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  final deleteTransactionUseCase = DeleteTransactionUseCase();
+  late Color primaryColor = ThemeColors.green;
+  final f = DateFormat("dd/MM/yyyy");
+
+  Future<void> deleteTransaction(int deleteType) async {
+    var monthKey = StringUtils.getMonthKey(widget.selectedDate);
+    try {
+      await deleteTransactionUseCase.execute(
+          monthKey, widget.transactionEntryEntity.id!, deleteType);
+
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text("Registro deletado com sucesso!"),
+            backgroundColor: ThemeColors.green,
+          ),
+        );
+
+      Navigator.pop(context);
+    } catch (err) {
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(err.toString()),
+            backgroundColor: Colors.red,
+          ),
+        );
+    }
+  }
+
+  void handleDeleteTransaction() {
+    if (widget.transactionEntryEntity.recurrenceType ==
+        RecurrenceType.none.id) {
+      deleteTransaction(DeleteType.ocurrence.id);
+    } else {
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          deleteTransaction(DeleteType.ocurrence.id);
+                        },
+                        child: const Text('Deletar ocorrência')),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+
+                          deleteTransaction(DeleteType.serie.id);
+                        },
+                        child: const Text('Deletar série'))
+                  ],
+                ));
+          });
+    }
+  }
+
+  void handleDoneTransaction() {}
+
+  void handleEditTransaction() {}
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.transactionEntryEntity.occurrenceType ==
+        OccurrenceType.income.id) {
       primaryColor = ThemeColors.green;
     } else {
       primaryColor = ThemeColors.red;
     }
   }
-
-  static const detailScreenFormType = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +125,7 @@ class DetailScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Wrap(
-                children: transactionEntryEntity.categories
+                children: widget.transactionEntryEntity.categories
                     .map((item) => Container(
                           decoration: BoxDecoration(
                               border: Border.all(width: 2, color: primaryColor),
@@ -71,12 +147,13 @@ class DetailScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    StringUtils.formatCurrency(transactionEntryEntity.amount),
+                    StringUtils.formatCurrency(
+                        widget.transactionEntryEntity.amount),
                     style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
                   const SizedBox(width: 8),
                   Icon(
-                      transactionEntryEntity.occurrenceType ==
+                      widget.transactionEntryEntity.occurrenceType ==
                               OccurrenceType.expense.id
                           ? Icons.arrow_circle_down_rounded
                           : Icons.arrow_circle_up_rounded,
@@ -86,9 +163,9 @@ class DetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                transactionEntryEntity.installment != null
-                    ? "${transactionEntryEntity.description} ${transactionEntryEntity.getCurrentInstallment(selectedDate)}/${transactionEntryEntity.installment}"
-                    : transactionEntryEntity.description,
+                widget.transactionEntryEntity.installment != null
+                    ? "${widget.transactionEntryEntity.description} ${widget.transactionEntryEntity.getCurrentInstallment(widget.selectedDate)}/${widget.transactionEntryEntity.installment}"
+                    : widget.transactionEntryEntity.description,
                 style: TextStyle(color: primaryColor, fontSize: 16),
               ),
               const SizedBox(height: 16),
@@ -96,7 +173,7 @@ class DetailScreen extends StatelessWidget {
                 children: [
                   Text(
                     RecurrenceType.getRecurrenceById(
-                            transactionEntryEntity.recurrenceType)
+                            widget.transactionEntryEntity.recurrenceType)
                         .description,
                     style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
@@ -111,7 +188,8 @@ class DetailScreen extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    f.format(transactionEntryEntity.getDueDate(selectedDate)),
+                    f.format(widget.transactionEntryEntity
+                        .getDueDate(widget.selectedDate)),
                     style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   Text(
@@ -126,7 +204,55 @@ class DetailScreen extends StatelessWidget {
           Expanded(
               child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [Icon(Icons.close), Icon(Icons.check_circle_sharp)],
+            children: [
+              Column(
+                children: [
+                  Container(
+                      decoration: BoxDecoration(
+                          color: ThemeColors.red,
+                          borderRadius: BorderRadius.circular(100)),
+                      child: IconButton(
+                        icon: const Icon(Icons.delete_forever),
+                        onPressed: handleDeleteTransaction,
+                      )),
+                  Text(
+                    "Deletar",
+                    style: TextStyle(
+                        color: ThemeColors.whiteAlpha, fontSize: 12, height: 3),
+                  )
+                ],
+              ),
+              Column(
+                children: [
+                  Ink(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: ThemeColors.blue),
+                      padding: const EdgeInsets.all(12),
+                      child: const Icon(Icons.edit)),
+                  Text(
+                    "Editar",
+                    style: TextStyle(
+                        color: ThemeColors.whiteAlpha, fontSize: 12, height: 3),
+                  )
+                ],
+              ),
+              Column(
+                children: [
+                  Ink(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: ThemeColors.green),
+                      padding: const EdgeInsets.all(12),
+                      child: const Icon(Icons.check_circle_sharp)),
+                  Text(
+                    "Efetivar",
+                    style: TextStyle(
+                        color: ThemeColors.whiteAlpha, fontSize: 12, height: 3),
+                  )
+                ],
+              )
+            ],
           ))
         ],
       ),
