@@ -44,6 +44,7 @@ class _TransactionFormState extends State<TransactionForm> {
   final f = DateFormat("dd/MM/yyyy");
   final insertTransactionUseCase = InsertTransactionEntryUseCase();
   final recurrenceList = RecurrenceType.recurrenceList;
+  final formatador = NumberFormat("#,##0.00", "pt_BR");
 
   TextEditingController dateController = TextEditingController();
 
@@ -56,6 +57,7 @@ class _TransactionFormState extends State<TransactionForm> {
   late String categoryValue;
   late int installmentValue;
   late Color primaryColor;
+  late double installmentAmount;
 
   Future _selectDate() async {
     DateTime? picked = await showDatePicker(
@@ -76,12 +78,16 @@ class _TransactionFormState extends State<TransactionForm> {
   void updateAmount(value) {
     setState(() {
       amount = value;
+      if (recurrenceValue == RecurrenceType.installment.id) {
+        installmentAmount = convertStringToDouble(amount) / installmentValue;
+      }
     });
   }
 
   void incrementInstallment() {
     setState(() {
       installmentValue++;
+      installmentAmount = convertStringToDouble(amount) / installmentValue;
     });
   }
 
@@ -89,6 +95,7 @@ class _TransactionFormState extends State<TransactionForm> {
     setState(() {
       if (installmentValue > 2) {
         installmentValue--;
+        installmentAmount = convertStringToDouble(amount) / installmentValue;
       }
     });
   }
@@ -107,6 +114,10 @@ class _TransactionFormState extends State<TransactionForm> {
     });
   }
 
+  double convertStringToDouble(String value) {
+    return double.parse(value.replaceAll('.', '').replaceAll(',', '.'));
+  }
+
   Future<void> submitForm() async {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
@@ -123,7 +134,9 @@ class _TransactionFormState extends State<TransactionForm> {
           dueDate: DateTime.utc(int.parse(dateSplitted[2]),
               int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
           description: description,
-          amount: double.parse(amount.replaceAll('.', '').replaceAll(',', '.')),
+          amount: recurrenceValue == RecurrenceType.installment.id
+              ? installmentAmount
+              : convertStringToDouble(amount),
           occurrenceType: occurenceType!,
           recurrenceType: recurrenceValue,
           installment: recurrenceValue == RecurrenceType.installment.id
@@ -166,7 +179,6 @@ class _TransactionFormState extends State<TransactionForm> {
   @override
   void initState() {
     super.initState();
-    var formatador = NumberFormat.decimalPattern('pt_BR');
 
     if (widget.initialTransactionEntity == null) {
       occurenceType = OccurrenceType.income.id;
@@ -175,13 +187,21 @@ class _TransactionFormState extends State<TransactionForm> {
       recurrenceValue = RecurrenceType.none.id;
       categoryValue = categoryList.first;
       installmentValue = 2;
+      installmentAmount = 0;
     } else {
       occurenceType = widget.initialTransactionEntity!.occurrenceType;
-      amount = formatador.format(widget.initialTransactionEntity!.amount);
       description = widget.initialTransactionEntity!.description;
       recurrenceValue = widget.initialTransactionEntity!.recurrenceType;
       categoryValue = widget.initialTransactionEntity!.categories[0];
       installmentValue = widget.initialTransactionEntity!.installment ?? 2;
+      if (recurrenceValue == RecurrenceType.installment.id) {
+        amount = formatador.format(widget.initialTransactionEntity!.amount *
+            widget.initialTransactionEntity!.installment!);
+        installmentAmount = widget.initialTransactionEntity!.amount;
+      } else {
+        amount = formatador.format(widget.initialTransactionEntity!.amount);
+        installmentAmount = 0;
+      }
     }
 
     if (widget.formType == 2) {
@@ -366,11 +386,6 @@ class _TransactionFormState extends State<TransactionForm> {
                                             RecurrenceType.installment.id
                                         ? Row(
                                             children: [
-                                              Text(
-                                                "$amount de",
-                                                style: const TextStyle(
-                                                    color: Colors.white),
-                                              ),
                                               IconButton(
                                                   onPressed:
                                                       decrementInstallment,
@@ -389,7 +404,12 @@ class _TransactionFormState extends State<TransactionForm> {
                                                   icon: Icon(
                                                     Icons.add,
                                                     color: primaryColor,
-                                                  ))
+                                                  )),
+                                              Text(
+                                                "de ${formatador.format(installmentAmount)}",
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                             ],
                                           )
                                         : const SizedBox.shrink()
