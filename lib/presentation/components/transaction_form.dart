@@ -449,7 +449,7 @@ class _TransactionFormState extends State<TransactionForm> {
                               ),
                               Flexible(
                                   child: DropdownButtonFormField(
-                                value: categoryList.first,
+                                value: categoryValue,
                                 dropdownColor: ThemeColors.darkGray,
                                 decoration: const InputDecoration(
                                     hintText: "", border: InputBorder.none),
