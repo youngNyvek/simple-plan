@@ -153,7 +153,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Text(
                     StringUtils.formatCurrency(
-                        widget.transactionEntryEntity.amount),
+                        widget.transactionEntryEntity.amount /
+                            (widget.transactionEntryEntity.installment ?? 1)),
                     style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
                   const SizedBox(width: 8),

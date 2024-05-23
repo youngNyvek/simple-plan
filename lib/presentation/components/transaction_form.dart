@@ -134,9 +134,7 @@ class _TransactionFormState extends State<TransactionForm> {
           dueDate: DateTime.utc(int.parse(dateSplitted[2]),
               int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
           description: description,
-          amount: recurrenceValue == RecurrenceType.installment.id
-              ? installmentAmount
-              : convertStringToDouble(amount),
+          amount: convertStringToDouble(amount),
           occurrenceType: occurenceType!,
           recurrenceType: recurrenceValue,
           installment: recurrenceValue == RecurrenceType.installment.id
@@ -194,12 +192,11 @@ class _TransactionFormState extends State<TransactionForm> {
       recurrenceValue = widget.initialTransactionEntity!.recurrenceType;
       categoryValue = widget.initialTransactionEntity!.categories[0];
       installmentValue = widget.initialTransactionEntity!.installment ?? 2;
+      amount = formatador.format(widget.initialTransactionEntity!.amount);
       if (recurrenceValue == RecurrenceType.installment.id) {
-        amount = formatador.format(widget.initialTransactionEntity!.amount *
-            widget.initialTransactionEntity!.installment!);
-        installmentAmount = widget.initialTransactionEntity!.amount;
+        installmentAmount =
+            widget.initialTransactionEntity!.amount / installmentValue;
       } else {
-        amount = formatador.format(widget.initialTransactionEntity!.amount);
         installmentAmount = 0;
       }
     }

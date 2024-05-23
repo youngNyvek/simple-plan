@@ -58,7 +58,7 @@ class TransactionCard extends StatelessWidget {
                       DoneFlag(done: done, occurenceType: occurrenceType)
                     ]),
                 AmountRow(
-                    amount: amount,
+                    amount: amount / (installment ?? 1),
                     currentInstallment: currentInstallment,
                     finalInstallment: installment)
               ],
