@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
 import 'package:simple_plan/domain/shared/enum/delete_type.dart';
@@ -9,6 +7,7 @@ import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
+import 'package:simple_plan/presentation/screens/editTransaction/index.dart';
 
 const List<String> categoryList = <String>[
   'Custo Fixo',
@@ -70,7 +69,7 @@ class _DetailScreenState extends State<DetailScreen> {
           context: context,
           builder: (BuildContext context) {
             return Container(
-                padding: EdgeInsets.symmetric(vertical: 24),
+                padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -95,7 +94,13 @@ class _DetailScreenState extends State<DetailScreen> {
 
   void handleDoneTransaction() {}
 
-  void handleEditTransaction() {}
+  void handleEditTransaction() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditTransaction(
+                transactionEntryEntity: widget.transactionEntryEntity)));
+  }
 
   @override
   void initState() {
@@ -224,17 +229,19 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
               Column(
                 children: [
-                  Ink(
+                  Container(
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: ThemeColors.blue),
-                      padding: const EdgeInsets.all(12),
-                      child: const Icon(Icons.edit)),
+                          color: ThemeColors.blue,
+                          borderRadius: BorderRadius.circular(100)),
+                      child: IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: handleEditTransaction,
+                      )),
                   Text(
                     "Editar",
                     style: TextStyle(
                         color: ThemeColors.whiteAlpha, fontSize: 12, height: 3),
-                  )
+                  ),
                 ],
               ),
               Column(

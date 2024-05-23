@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
