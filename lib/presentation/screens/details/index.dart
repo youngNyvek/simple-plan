@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
 import 'package:simple_plan/domain/shared/enum/delete_type.dart';
@@ -9,6 +7,7 @@ import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
+import 'package:simple_plan/presentation/screens/editTransaction/index.dart';
 
 const List<String> categoryList = <String>[
   'Custo Fixo',
@@ -32,12 +31,13 @@ class _DetailScreenState extends State<DetailScreen> {
   final deleteTransactionUseCase = DeleteTransactionUseCase();
   late Color primaryColor = ThemeColors.green;
   final f = DateFormat("dd/MM/yyyy");
+  late TransactionEntryEntity transactionEntryEntity;
 
   Future<void> deleteTransaction(int deleteType) async {
     var monthKey = StringUtils.getMonthKey(widget.selectedDate);
     try {
       await deleteTransactionUseCase.execute(
-          monthKey, widget.transactionEntryEntity.id!, deleteType);
+          monthKey, transactionEntryEntity.id!, deleteType);
 
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
@@ -61,16 +61,22 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
+  void changeTransactionEntity(
+      TransactionEntryEntity newTransactionEntryEntity) {
+    setState(() {
+      transactionEntryEntity = newTransactionEntryEntity;
+    });
+  }
+
   void handleDeleteTransaction() {
-    if (widget.transactionEntryEntity.recurrenceType ==
-        RecurrenceType.none.id) {
+    if (transactionEntryEntity.recurrenceType == RecurrenceType.none.id) {
       deleteTransaction(DeleteType.ocurrence.id);
     } else {
       showModalBottomSheet(
           context: context,
           builder: (BuildContext context) {
             return Container(
-                padding: EdgeInsets.symmetric(vertical: 24),
+                padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -95,14 +101,24 @@ class _DetailScreenState extends State<DetailScreen> {
 
   void handleDoneTransaction() {}
 
-  void handleEditTransaction() {}
+  void handleEditTransaction() {
+    Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditTransaction(
+                    transactionEntryEntity: transactionEntryEntity)))
+        .then((newTransactionEntryEntity) {
+      changeTransactionEntity(newTransactionEntryEntity);
+    });
+  }
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.transactionEntryEntity.occurrenceType ==
-        OccurrenceType.income.id) {
+    transactionEntryEntity = widget.transactionEntryEntity;
+
+    if (transactionEntryEntity.occurrenceType == OccurrenceType.income.id) {
       primaryColor = ThemeColors.green;
     } else {
       primaryColor = ThemeColors.red;
@@ -125,7 +141,7 @@ class _DetailScreenState extends State<DetailScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Wrap(
-                children: widget.transactionEntryEntity.categories
+                children: transactionEntryEntity.categories
                     .map((item) => Container(
                           decoration: BoxDecoration(
                               border: Border.all(width: 2, color: primaryColor),
@@ -147,13 +163,13 @@ class _DetailScreenState extends State<DetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    StringUtils.formatCurrency(
-                        widget.transactionEntryEntity.amount),
+                    StringUtils.formatCurrency(transactionEntryEntity.amount /
+                        (transactionEntryEntity.installment ?? 1)),
                     style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
                   const SizedBox(width: 8),
                   Icon(
-                      widget.transactionEntryEntity.occurrenceType ==
+                      transactionEntryEntity.occurrenceType ==
                               OccurrenceType.expense.id
                           ? Icons.arrow_circle_down_rounded
                           : Icons.arrow_circle_up_rounded,
@@ -163,9 +179,9 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                widget.transactionEntryEntity.installment != null
-                    ? "${widget.transactionEntryEntity.description} ${widget.transactionEntryEntity.getCurrentInstallment(widget.selectedDate)}/${widget.transactionEntryEntity.installment}"
-                    : widget.transactionEntryEntity.description,
+                transactionEntryEntity.installment != null
+                    ? "${transactionEntryEntity.description} ${transactionEntryEntity.getCurrentInstallment(widget.selectedDate)}/${transactionEntryEntity.installment}"
+                    : transactionEntryEntity.description,
                 style: TextStyle(color: primaryColor, fontSize: 16),
               ),
               const SizedBox(height: 16),
@@ -173,7 +189,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Text(
                     RecurrenceType.getRecurrenceById(
-                            widget.transactionEntryEntity.recurrenceType)
+                            transactionEntryEntity.recurrenceType)
                         .description,
                     style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
@@ -188,8 +204,8 @@ class _DetailScreenState extends State<DetailScreen> {
               Column(
                 children: [
                   Text(
-                    f.format(widget.transactionEntryEntity
-                        .getDueDate(widget.selectedDate)),
+                    f.format(
+                        transactionEntryEntity.getDueDate(widget.selectedDate)),
                     style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   Text(
@@ -224,17 +240,19 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
               Column(
                 children: [
-                  Ink(
+                  Container(
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: ThemeColors.blue),
-                      padding: const EdgeInsets.all(12),
-                      child: const Icon(Icons.edit)),
+                          color: ThemeColors.blue,
+                          borderRadius: BorderRadius.circular(100)),
+                      child: IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: handleEditTransaction,
+                      )),
                   Text(
                     "Editar",
                     style: TextStyle(
                         color: ThemeColors.whiteAlpha, fontSize: 12, height: 3),
-                  )
+                  ),
                 ],
               ),
               Column(

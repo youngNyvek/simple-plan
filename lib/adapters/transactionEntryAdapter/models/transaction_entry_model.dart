@@ -32,7 +32,8 @@ class TransactionEntryModel {
       this.excludedMonths);
 
   TransactionEntryModel.fromEntity(TransactionEntryEntity entity)
-      : finalDate = entity.finalDate,
+      : id = entity.id ?? Isar.autoIncrement,
+        finalDate = entity.finalDate,
         installment = entity.installment,
         description = entity.description,
         amount = entity.amount,

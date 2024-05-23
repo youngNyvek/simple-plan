@@ -1,5 +1,4 @@
 import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
-import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
 import 'package:simple_plan/domain/shared/enum/delete_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 
