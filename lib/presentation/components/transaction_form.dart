@@ -156,7 +156,7 @@ class _TransactionFormState extends State<TransactionForm> {
             ),
           );
 
-        Navigator.pop(context);
+        Navigator.pop(context, transactionEntity);
       } catch (err) {
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
