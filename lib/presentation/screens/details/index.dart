@@ -7,6 +7,7 @@ import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
+import 'package:simple_plan/domain/useCases/toggle_done_value_use_case.dart';
 import 'package:simple_plan/presentation/screens/editTransaction/index.dart';
 
 const List<String> categoryList = <String>[
@@ -29,12 +30,14 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   final deleteTransactionUseCase = DeleteTransactionUseCase();
-  late Color primaryColor = ThemeColors.green;
+  final toggleDoneValueUseCase = ToggleDoneValueUseCase();
+
   final f = DateFormat("dd/MM/yyyy");
+  late String monthKey;
+  late Color primaryColor = ThemeColors.green;
   late TransactionEntryEntity transactionEntryEntity;
 
   Future<void> deleteTransaction(int deleteType) async {
-    var monthKey = StringUtils.getMonthKey(widget.selectedDate);
     try {
       await deleteTransactionUseCase.execute(
           monthKey, transactionEntryEntity.id!, deleteType);
@@ -59,6 +62,12 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
         );
     }
+  }
+
+  void toggleDone() {
+    setState(() {
+      transactionEntryEntity.done = !transactionEntryEntity.done;
+    });
   }
 
   void changeTransactionEntity(
@@ -99,7 +108,10 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
-  void handleDoneTransaction() {}
+  Future<void> handleDoneTransaction() async {
+    await toggleDoneValueUseCase.execute(monthKey, transactionEntryEntity.id!);
+    toggleDone();
+  }
 
   void handleEditTransaction() {
     Navigator.push(
@@ -117,6 +129,7 @@ class _DetailScreenState extends State<DetailScreen> {
     super.initState();
 
     transactionEntryEntity = widget.transactionEntryEntity;
+    monthKey = StringUtils.getMonthKey(widget.selectedDate);
 
     if (transactionEntryEntity.occurrenceType == OccurrenceType.income.id) {
       primaryColor = ThemeColors.green;
@@ -257,14 +270,20 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
               Column(
                 children: [
-                  Ink(
+                  Container(
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: ThemeColors.green),
-                      padding: const EdgeInsets.all(12),
-                      child: const Icon(Icons.check_circle_sharp)),
+                          color: transactionEntryEntity.done
+                              ? ThemeColors.red
+                              : ThemeColors.green,
+                          borderRadius: BorderRadius.circular(100)),
+                      child: IconButton(
+                        icon: Icon(transactionEntryEntity.done
+                            ? Icons.close
+                            : Icons.check_circle_sharp),
+                        onPressed: handleDoneTransaction,
+                      )),
                   Text(
-                    "Efetivar",
+                    transactionEntryEntity.done ? "Cancelar" : "Confirmar",
                     style: TextStyle(
                         color: ThemeColors.whiteAlpha, fontSize: 12, height: 3),
                   )

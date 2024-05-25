@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import 'package:simple_plan/domain/entities/done_transaction_Entity.dart';
+import 'package:simple_plan/domain/entities/done_transaction_entity.dart';
 
 part 'done_transaction_model.g.dart';
 
@@ -8,7 +8,7 @@ class DoneTransactionModel {
   Id id = Isar.autoIncrement;
   final String monthKey;
   final int transactionId;
-  final bool value;
+  bool value;
 
   DoneTransactionModel(this.monthKey, this.transactionId, this.value);
 

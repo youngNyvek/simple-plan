@@ -1,26 +1,13 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:simple_plan/adapters/isar_adapter_base.dart';
 import 'package:simple_plan/adapters/transactionEntryAdapter/models/transaction_entry_model.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 
-class TransactionEntryAdapter {
-  static late Isar db;
-
-  static Future<void> initialize() async {
-    final dir = await getApplicationDocumentsDirectory();
-    db = await Isar.open([TransactionEntryModelSchema], directory: dir.path);
-  }
-
-  Future<T> executeInTransactionWithResult<T>(
-      Future<T> Function() function) async {
-    return await db.writeTxn(function);
-  }
-
-  Future<void> executeInTransaction(Future<void> Function() function) async {
-    await db.writeTxn<void>(function);
-  }
+class TransactionEntryAdapter extends IsarAdapterBase {
+  static final db = IsarAdapterBase.db;
 
   Future<int> insertTransaction(TransactionEntryEntity entity) async {
     var model = TransactionEntryModel.fromEntity(entity);

@@ -5,7 +5,7 @@ class DoneTransactionEntity {
   final bool value;
 
   DoneTransactionEntity(
-      {required this.id,
+      {this.id,
       required this.monthKey,
       required this.transactionId,
       required this.value});
