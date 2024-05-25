@@ -3,8 +3,7 @@ import 'package:simple_plan/domain/shared/enum/delete_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 
 class DeleteTransactionUseCase {
-  final DynamicTransactionEntryAdapter transactionDb =
-      DynamicTransactionEntryAdapter();
+  final TransactionEntryAdapter transactionDb = TransactionEntryAdapter();
 
   Future<void> execute(
       String monthKey, int transactionId, int deleteType) async {

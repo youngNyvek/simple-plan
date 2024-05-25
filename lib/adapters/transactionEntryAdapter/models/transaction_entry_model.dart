@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
+import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 
 part 'transaction_entry_model.g.dart';
 

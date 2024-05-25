@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
+import 'package:simple_plan/adapters/isar_adapter_base.dart';
 import 'package:simple_plan/presentation/screens/addTransaction/index.dart';
 import 'package:simple_plan/presentation/screens/home/index.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DynamicTransactionEntryAdapter.initialize();
+  await IsarAdapterBase.initialize();
 
   runApp(const MyApp());
 }
