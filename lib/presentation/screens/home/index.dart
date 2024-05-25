@@ -55,7 +55,12 @@ class _HomeState extends State<Home> {
           _currentExpenses = doneExpenses
               .map((element) => element.amount)
               .reduce((value, element) => value + element);
+        } else {
+          _currentExpenses = 0;
         }
+      } else {
+        _expenses = 0;
+        _currentExpenses = 0;
       }
 
       if (filteredIncomes.isNotEmpty) {
@@ -69,7 +74,12 @@ class _HomeState extends State<Home> {
           _currentIncomes = doneIncomes
               .map((element) => element.amount)
               .reduce((value, element) => value + element);
+        } else {
+          _currentIncomes = 0;
         }
+      } else {
+        _incomes = 0;
+        _currentIncomes = 0;
       }
     });
   }

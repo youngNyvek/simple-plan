@@ -10,11 +10,6 @@ import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
 import 'package:simple_plan/domain/useCases/toggle_done_value_use_case.dart';
 import 'package:simple_plan/presentation/screens/editTransaction/index.dart';
 
-const List<String> categoryList = <String>[
-  'Custo Fixo',
-  'Lazer',
-];
-
 class DetailScreen extends StatefulWidget {
   final TransactionEntryEntity transactionEntryEntity;
   final DateTime selectedDate;

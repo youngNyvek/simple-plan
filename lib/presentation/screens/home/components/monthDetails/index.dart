@@ -52,22 +52,22 @@ class MonthDetail extends StatelessWidget {
                     primaryColor: ThemeColors.green),
               ],
             ),
-            const SizedBox(
-              height: 14,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Mais detalhes",
-                  style: TextStyle(color: Colors.white.withOpacity(0.5)),
-                ),
-                Icon(
-                  Icons.expand_more,
-                  color: Colors.white.withOpacity(0.5),
-                )
-              ],
-            )
+            // const SizedBox(
+            //   height: 14,
+            // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text(
+            //       "Mais detalhes",
+            //       style: TextStyle(color: Colors.white.withOpacity(0.5)),
+            //     ),
+            //     Icon(
+            //       Icons.expand_more,
+            //       color: Colors.white.withOpacity(0.5),
+            //     )
+            //   ],
+            // )
           ],
         ));
   }
