@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
-import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 import 'package:simple_plan/domain/useCases/insert_transaction_entry_use_case.dart';
 
