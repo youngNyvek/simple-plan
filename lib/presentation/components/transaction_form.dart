@@ -10,8 +10,10 @@ import 'package:simple_plan/domain/useCases/insert_transaction_entry_use_case.da
 
 const List<String> categoryList = <String>[
   'Custo Fixo',
-  'Lazer',
   'Conforto',
+  'Metas',
+  'Prazeres',
+  'Conhecimento',
   'Liberdade Finânceira'
 ];
 
