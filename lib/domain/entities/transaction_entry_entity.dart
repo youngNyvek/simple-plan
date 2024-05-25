@@ -4,7 +4,7 @@ class TransactionEntryEntity {
   final double amount;
   final DateTime dueDate;
   final int occurrenceType;
-  final bool done;
+  bool done;
   DateTime? finalDate;
   final int? installment;
   final List<String> categories;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
+import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/string_utils.dart';

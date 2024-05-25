@@ -8,7 +8,7 @@ import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DynamicTransactionEntryAdapter.initialize();
+  await TransactionEntryAdapter.initialize();
 
   runApp(const MyApp());
 }

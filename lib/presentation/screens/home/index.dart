@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:simple_plan/domain/entities/transaction_entry_entitie.dart';
+import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 import 'package:simple_plan/domain/useCases/list_transactions_use_case.dart';
 import 'package:simple_plan/presentation/screens/details/index.dart';
 import 'package:simple_plan/presentation/screens/home/components/expandable_fab.dart';
