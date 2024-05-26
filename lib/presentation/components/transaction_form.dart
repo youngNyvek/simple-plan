@@ -18,13 +18,6 @@ const List<String> categoryList = <String>[
 
 const requiredField = "Obrigatório";
 
-const dropdowMenuItem = [
-  DropdownMenuItem<String>(
-      value: "Sem recorrência", child: Text("Sem recorrência")),
-  DropdownMenuItem<String>(value: "Fixo mensal", child: Text("Fixo mensal")),
-  DropdownMenuItem<String>(value: "Sem recorrência", child: Text("Parcelado"))
-];
-
 class TransactionForm extends StatefulWidget {
   final String screenTitle;
   final int formType;
@@ -42,10 +35,10 @@ class TransactionForm extends StatefulWidget {
 
 class _TransactionFormState extends State<TransactionForm> {
   final _formKey = GlobalKey<FormState>();
-  final f = DateFormat("dd/MM/yyyy");
+  final formatadorData = DateFormat("dd/MM/yyyy");
   final insertTransactionUseCase = InsertTransactionEntryUseCase();
   final recurrenceList = RecurrenceType.recurrenceList;
-  final formatador = NumberFormat("#,##0.00", "pt_BR");
+  final formatadorDecimal = NumberFormat("#,##0.00", "pt_BR");
 
   TextEditingController dateController = TextEditingController();
 
@@ -63,11 +56,15 @@ class _TransactionFormState extends State<TransactionForm> {
   Future _selectDate() async {
     DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: currentDate,
+        initialDate: widget.initialTransactionEntity != null
+            ? widget.initialTransactionEntity!.dueDate
+            : currentDate,
         firstDate: DateTime(currentDate.year - 10),
         lastDate: DateTime(currentDate.year + 10));
 
-    if (picked != null) setState(() => dateController.text = f.format(picked));
+    if (picked != null) {
+      setState(() => dateController.text = formatadorData.format(picked));
+    }
   }
 
   void updateDescription(value) {
@@ -172,7 +169,7 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   _TransactionFormState() {
-    dateController.text = f.format(currentDate);
+    dateController.text = formatadorData.format(currentDate);
   }
 
   @override
@@ -193,7 +190,10 @@ class _TransactionFormState extends State<TransactionForm> {
       recurrenceValue = widget.initialTransactionEntity!.recurrenceType;
       categoryValue = widget.initialTransactionEntity!.categories[0];
       installmentValue = widget.initialTransactionEntity!.installment ?? 2;
-      amount = formatador.format(widget.initialTransactionEntity!.amount);
+      amount =
+          formatadorDecimal.format(widget.initialTransactionEntity!.amount);
+      dateController.text =
+          formatadorData.format(widget.initialTransactionEntity!.dueDate);
       if (recurrenceValue == RecurrenceType.installment.id) {
         installmentAmount =
             widget.initialTransactionEntity!.amount / installmentValue;
@@ -244,7 +244,7 @@ class _TransactionFormState extends State<TransactionForm> {
                           Flexible(
                             child: RadioListTile(
                               contentPadding: EdgeInsets.zero,
-                              fillColor: MaterialStateColor.resolveWith(
+                              fillColor: WidgetStateColor.resolveWith(
                                   (states) => primaryColor),
                               title: Text(OccurrenceType.income.description,
                                   style: const TextStyle(color: Colors.white)),
@@ -256,7 +256,7 @@ class _TransactionFormState extends State<TransactionForm> {
                           Flexible(
                               child: RadioListTile(
                             contentPadding: EdgeInsets.zero,
-                            fillColor: MaterialStateColor.resolveWith(
+                            fillColor: WidgetStateColor.resolveWith(
                                 (states) => primaryColor),
                             title: Text(OccurrenceType.expense.description,
                                 style: const TextStyle(color: Colors.white)),
@@ -404,7 +404,7 @@ class _TransactionFormState extends State<TransactionForm> {
                                                     color: primaryColor,
                                                   )),
                                               Text(
-                                                "de ${formatador.format(installmentAmount)}",
+                                                "de ${formatadorDecimal.format(installmentAmount)}",
                                                 style: const TextStyle(
                                                     color: Colors.white),
                                               ),
