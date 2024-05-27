@@ -30,9 +30,13 @@ class DoneTransactionAdapter extends IsarAdapterBase {
             .and()
             .transactionIdEqualTo(transactionId)
             .findAll())
-        .elementAt(0);
+        .firstOrNull;
 
-    doneTransaction.value = !doneTransaction.value;
+    if (doneTransaction == null) {
+      doneTransaction = DoneTransactionModel(monthKey, transactionId, true);
+    } else {
+      doneTransaction.value = !doneTransaction.value;
+    }
 
     await db.doneTransactionModels.put(doneTransaction);
   }
