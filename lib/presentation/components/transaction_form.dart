@@ -157,7 +157,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 ));
           });
     } else {
-      submitForm(null);
+      submitForm(widget.initialTransactionEntity!.id);
     }
   }
 
