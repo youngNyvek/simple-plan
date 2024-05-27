@@ -110,11 +110,11 @@ class _DetailScreenState extends State<DetailScreen> {
 
   void handleEditTransaction() {
     Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => EditTransaction(
-                    transactionEntryEntity: transactionEntryEntity)))
-        .then((newTransactionEntryEntity) {
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditTransaction(
+                transactionEntryEntity: transactionEntryEntity,
+                monthKey: monthKey))).then((newTransactionEntryEntity) {
       changeTransactionEntity(newTransactionEntryEntity);
     });
   }
@@ -123,7 +123,9 @@ class _DetailScreenState extends State<DetailScreen> {
   void initState() {
     super.initState();
 
-    transactionEntryEntity = widget.transactionEntryEntity;
+    transactionEntryEntity = widget.transactionEntryEntity
+      ..dueDate = widget.transactionEntryEntity.getDueDate(widget.selectedDate);
+
     monthKey = StringUtils.getMonthKey(widget.selectedDate);
 
     if (transactionEntryEntity.occurrenceType == OccurrenceType.income.id) {
@@ -212,8 +214,7 @@ class _DetailScreenState extends State<DetailScreen> {
               Column(
                 children: [
                   Text(
-                    f.format(
-                        transactionEntryEntity.getDueDate(widget.selectedDate)),
+                    f.format(transactionEntryEntity.dueDate),
                     style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   Text(

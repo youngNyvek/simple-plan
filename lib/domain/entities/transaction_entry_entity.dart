@@ -2,7 +2,7 @@ class TransactionEntryEntity {
   final int? id;
   final String description;
   final double amount;
-  final DateTime dueDate;
+  DateTime dueDate;
   final int occurrenceType;
   bool done;
   DateTime? finalDate;
@@ -49,10 +49,9 @@ class TransactionEntryEntity {
       var newDueDate =
           DateTime(currentDate.year, currentDate.month, dueDate.day);
 
-      if (DateTime.sunday == newDueDate.weekday) {
-        return newDueDate.add(const Duration(days: 1));
-      } else if (DateTime.saturday == newDueDate.weekday) {
-        return newDueDate.add(const Duration(days: 2));
+      if (newDueDate.month > currentDate.month) {
+        newDueDate = DateTime(newDueDate.year, newDueDate.month,
+            0); // this way, we can get the last day of feb
       }
 
       return newDueDate;

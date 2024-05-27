@@ -11,6 +11,7 @@ class AddTransaction extends StatelessWidget {
       screenTitle: "Nova Transação",
       formType: addTransactionFormType,
       initialTransactionEntity: null,
+      monthKey: null,
     );
   }
 }
