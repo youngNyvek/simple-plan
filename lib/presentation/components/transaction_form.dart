@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
+import 'package:simple_plan/domain/shared/enum/delete_type.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
+import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
 import 'package:simple_plan/domain/useCases/insert_transaction_entry_use_case.dart';
 
 const List<String> categoryList = <String>[
@@ -22,12 +25,14 @@ class TransactionForm extends StatefulWidget {
   final String screenTitle;
   final int formType;
   final TransactionEntryEntity? initialTransactionEntity;
+  final String? monthKey;
 
   const TransactionForm(
       {super.key,
       required this.screenTitle,
       required this.formType,
-      required this.initialTransactionEntity});
+      required this.initialTransactionEntity,
+      required this.monthKey});
 
   @override
   State<TransactionForm> createState() => _TransactionFormState();
@@ -36,7 +41,8 @@ class TransactionForm extends StatefulWidget {
 class _TransactionFormState extends State<TransactionForm> {
   final _formKey = GlobalKey<FormState>();
   final formatadorData = DateFormat("dd/MM/yyyy");
-  final insertTransactionUseCase = InsertTransactionEntryUseCase();
+  final insertTransactionUseCase = InsertOrUpdateTransactionEntryUseCase();
+  final deleteTransactionUseCase = DeleteTransactionUseCase();
   final recurrenceList = RecurrenceType.recurrenceList;
   final formatadorDecimal = NumberFormat("#,##0.00", "pt_BR");
 
@@ -116,7 +122,46 @@ class _TransactionFormState extends State<TransactionForm> {
     return double.parse(value.replaceAll('.', '').replaceAll(',', '.'));
   }
 
-  Future<void> submitForm() async {
+  void handleEditOcurrence() {
+    setState(() {
+      recurrenceValue = RecurrenceType.none.id;
+    });
+    submitForm(null);
+    deleteTransactionUseCase.execute(widget.monthKey!,
+        widget.initialTransactionEntity!.id!, DeleteType.ocurrence.id);
+    Navigator.pop(context);
+  }
+
+  void handleSubmitForm() async {
+    if (widget.formType == 2 &&
+        widget.initialTransactionEntity!.recurrenceType ==
+            RecurrenceType.every.id) {
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        onPressed: handleEditOcurrence,
+                        child: const Text('Editar ocorrência')),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          submitForm(widget.initialTransactionEntity!.id);
+                        },
+                        child: const Text('Editar série'))
+                  ],
+                ));
+          });
+    } else {
+      submitForm(null);
+    }
+  }
+
+  Future<void> submitForm(int? transactionId) async {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
@@ -125,11 +170,10 @@ class _TransactionFormState extends State<TransactionForm> {
         );
 
       var dateSplitted = dateController.text.split("/");
-
       var transactionEntity = TransactionEntryEntity(
-          id: widget.initialTransactionEntity?.id,
+          id: transactionId,
           done: false,
-          dueDate: DateTime.utc(int.parse(dateSplitted[2]),
+          dueDate: DateTime(int.parse(dateSplitted[2]),
               int.parse(dateSplitted[1]), int.parse(dateSplitted[0])),
           description: description,
           amount: convertStringToDouble(amount),
@@ -497,7 +541,7 @@ class _TransactionFormState extends State<TransactionForm> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         child: ElevatedButton(
-                          onPressed: submitForm,
+                          onPressed: handleSubmitForm,
                           child: Text(
                             widget.formType == 1
                                 ? 'Criar nova transação'
