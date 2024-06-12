@@ -187,41 +187,47 @@ class _HomeState extends State<Home> {
 
   Widget cashFlowByMonth() {
     return Expanded(
-        flex: 1,
-        child: ListView(
-          // This next line does the trick.
-          scrollDirection: Axis.vertical,
-          children: transactionList
-              .map((item) => InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailScreen(
-                            selectedDate: selectedDate,
-                            transactionEntryEntity: item),
-                      ),
-                    ).then((dadosAtualizados) {
-                      setupList();
-                    }),
-                    child: Column(
-                      children: [
-                        TransactionCard(
-                            key: Key("${item.id}"),
-                            done: item.done,
-                            amount: item.amount,
-                            categories: item.categories,
-                            description: item.description,
-                            installment: item.installment,
-                            currentInstallment:
-                                item.getCurrentInstallment(selectedDate),
-                            occurrenceType: item.occurrenceType),
-                        const SizedBox(
-                          height: 22,
-                        ),
-                      ],
-                    ),
-                  ))
-              .toList(),
-        ));
+      flex: 1,
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: transactionList.length,
+        itemBuilder: (context, index) {
+          final item = transactionList[index];
+          return Column(
+            children: [
+              InkWell(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailScreen(
+                        selectedDate: selectedDate,
+                        transactionEntryEntity: item),
+                  ),
+                ).then((dadosAtualizados) {
+                  setupList();
+                }),
+                child: TransactionCard(
+                  key: Key("${item.id}"),
+                  done: item.done,
+                  amount: item.amount,
+                  categories: item.categories,
+                  description: item.description,
+                  installment: item.installment,
+                  currentInstallment: item.getCurrentInstallment(selectedDate),
+                  occurrenceType: item.occurrenceType,
+                ),
+              ),
+              const SizedBox(
+                height: 22,
+              ),
+              if (index == transactionList.length - 1)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 60.0),
+                ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }
