@@ -10,14 +10,7 @@ class InsertOrUpdateTransactionEntryUseCase {
 
   Future<void> execute(TransactionEntryEntity entity) async {
     await transactionDb.executeInTransaction(() async {
-      var id = await transactionDb.insertTransaction(entity);
-
-      var doneEntity = DoneTransactionEntity(
-          monthKey: StringUtils.getMonthKey(entity.dueDate),
-          transactionId: id,
-          value: false);
-
-      await doneTransactionDb.insertDone(doneEntity);
+      await transactionDb.insertTransaction(entity);
     });
   }
 }
