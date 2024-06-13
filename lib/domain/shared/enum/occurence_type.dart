@@ -4,8 +4,8 @@ class OccurrenceType {
 
   const OccurrenceType(this.description, this.id);
 
-  static const income = OccurrenceType("Receita", 1);
-  static const expense = OccurrenceType("Despesa", 2);
+  static const income = OccurrenceType("Ganho", 1);
+  static const expense = OccurrenceType("Gasto", 2);
 
   static const occurrencesList = [income, expense];
 }
