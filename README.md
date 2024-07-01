@@ -51,9 +51,7 @@ Para clonar e rodar este aplicativo, siga os passos abaixo:
 
 Adicione capturas de tela do aplicativo para demonstrar suas funcionalidades:
 
-<img src="images/mockup1.png" alt="Print 1" width="300"/>
 <img src="images/mockup2.png" alt="Print 2" width="300"/>
-<img src="images/mockup3.png" alt="Print 3" width="300"/>
 <img src="images/mockup4.png" alt="Print 4" width="300"/>
 
 ## Contribuição
