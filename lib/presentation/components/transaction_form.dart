@@ -59,6 +59,10 @@ class _TransactionFormState extends State<TransactionForm> {
   late Color primaryColor;
   late double installmentAmount;
 
+  void setInstallmentAmount() {
+    installmentAmount = convertStringToDouble(amount) / installmentValue;
+  }
+
   Future _selectDate() async {
     DateTime? picked = await showDatePicker(
         context: context,
@@ -73,7 +77,7 @@ class _TransactionFormState extends State<TransactionForm> {
     }
   }
 
-  void updateDescription(value) {
+  void updateDescription(String value) {
     setState(() {
       description = value;
     });
@@ -83,7 +87,7 @@ class _TransactionFormState extends State<TransactionForm> {
     setState(() {
       amount = value;
       if (recurrenceValue == RecurrenceType.installment.id) {
-        installmentAmount = convertStringToDouble(amount) / installmentValue;
+        setInstallmentAmount();
       }
     });
   }
@@ -91,7 +95,7 @@ class _TransactionFormState extends State<TransactionForm> {
   void incrementInstallment() {
     setState(() {
       installmentValue++;
-      installmentAmount = convertStringToDouble(amount) / installmentValue;
+      setInstallmentAmount();
     });
   }
 
@@ -101,6 +105,13 @@ class _TransactionFormState extends State<TransactionForm> {
         installmentValue--;
         installmentAmount = convertStringToDouble(amount) / installmentValue;
       }
+    });
+  }
+
+  void handleChangeRecurrenceType(String? value) {
+    setState(() {
+      recurrenceValue = RecurrenceType.getRecurrenceByDesc(value!).id;
+      setInstallmentAmount();
     });
   }
 
@@ -267,7 +278,8 @@ class _TransactionFormState extends State<TransactionForm> {
           backgroundColor: primaryColor,
           title: Text(widget.screenTitle),
         ),
-        body: Form(
+        body: SingleChildScrollView(
+            child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,7 +337,7 @@ class _TransactionFormState extends State<TransactionForm> {
                         },
                         cursorColor: primaryColor,
                         initialValue: description,
-                        onChanged: (value) => {updateDescription(value)},
+                        onChanged: updateDescription,
                         decoration: InputDecoration(
                             icon: Icon(
                               Icons.description,
@@ -404,14 +416,7 @@ class _TransactionFormState extends State<TransactionForm> {
                                       decoration: const InputDecoration(
                                           hintText: "",
                                           border: InputBorder.none),
-                                      onChanged: (String? value) {
-                                        // This is called when the user selects an item.
-                                        setState(() {
-                                          recurrenceValue = RecurrenceType
-                                                  .getRecurrenceByDesc(value!)
-                                              .id;
-                                        });
-                                      },
+                                      onChanged: handleChangeRecurrenceType,
                                       items: recurrenceList
                                           .map<DropdownMenuItem<String>>(
                                               (RecurrenceType value) {
@@ -554,7 +559,7 @@ class _TransactionFormState extends State<TransactionForm> {
                   ))
             ],
           ),
-        ));
+        )));
   }
 }
 
