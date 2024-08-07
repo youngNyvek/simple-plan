@@ -1,5 +1,4 @@
 import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:simple_plan/adapters/isar_adapter_base.dart';
 import 'package:simple_plan/adapters/transactionEntryAdapter/models/transaction_entry_model.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';

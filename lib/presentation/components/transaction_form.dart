@@ -5,7 +5,6 @@ import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 import 'package:simple_plan/domain/shared/enum/delete_type.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
-import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
 import 'package:simple_plan/domain/useCases/insert_transaction_entry_use_case.dart';
@@ -198,7 +197,7 @@ class _TransactionFormState extends State<TransactionForm> {
       try {
         await insertTransactionUseCase.execute(transactionEntity);
 
-        if (!context.mounted) return;
+        if (!mounted) return;
 
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
@@ -239,6 +238,13 @@ class _TransactionFormState extends State<TransactionForm> {
       categoryValue = categoryList.first;
       installmentValue = 2;
       installmentAmount = 0;
+
+      if (widget.monthKey != null) {
+        var month = int.parse(widget.monthKey!.split(":")[0]);
+
+        var dueDate = DateTime(currentDate.year, month, 1);
+        dateController.text = formatadorData.format(dueDate);
+      }
     } else {
       occurenceType = widget.initialTransactionEntity!.occurrenceType;
       description = widget.initialTransactionEntity!.description;

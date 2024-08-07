@@ -37,6 +37,8 @@ class _DetailScreenState extends State<DetailScreen> {
       await deleteTransactionUseCase.execute(
           monthKey, transactionEntryEntity.id!, deleteType);
 
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(

@@ -3,8 +3,6 @@ import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 
 part 'transaction_entry_model.g.dart';
 
-const List<String> _defaultCategories = ["CUSTO FIXO", "LAZER", "SAÚDE"];
-
 @Collection()
 class TransactionEntryModel {
   Id id = Isar.autoIncrement;
