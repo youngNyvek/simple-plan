@@ -7,8 +7,18 @@ class InsertOrUpdateTransactionEntryUseCase {
   final DoneTransactionAdapter doneTransactionDb = DoneTransactionAdapter();
 
   Future<void> execute(TransactionEntryEntity entity) async {
+    var currentDateTime = DateTime.now();
+    var currentDate = DateTime(
+        currentDateTime.year, currentDateTime.month, currentDateTime.day);
+
     await transactionDb.executeInTransaction(() async {
-      await transactionDb.insertTransaction(entity);
+      var transactionId = await transactionDb.insertTransaction(entity);
+
+      if (entity.dueDate == currentDate) {
+        var monthKey = "${entity.dueDate.month}:${entity.dueDate.year}";
+
+        await doneTransactionDb.toggleDoneValue(monthKey, transactionId);
+      }
     });
   }
 }

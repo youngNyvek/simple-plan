@@ -176,7 +176,7 @@ class _TransactionFormState extends State<TransactionForm> {
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(
-          const SnackBar(content: Text('Processing Data')),
+          const SnackBar(content: Text('Processando...')),
         );
 
       var dateSplitted = dateController.text.split("/");
@@ -240,10 +240,16 @@ class _TransactionFormState extends State<TransactionForm> {
       installmentAmount = 0;
 
       if (widget.monthKey != null) {
-        var month = int.parse(widget.monthKey!.split(":")[0]);
+        var monthKeySplitted = widget.monthKey!.split(":");
+        var month = int.parse(monthKeySplitted[0]);
+        var year = int.parse(monthKeySplitted[1]);
 
-        var dueDate = DateTime(currentDate.year, month, 1);
-        dateController.text = formatadorData.format(dueDate);
+        if (month == currentDate.month && year == currentDate.year) {
+          dateController.text = formatadorData.format(currentDate);
+        } else {
+          var dueDate = DateTime(currentDate.year, month, 7);
+          dateController.text = formatadorData.format(dueDate);
+        }
       }
     } else {
       occurenceType = widget.initialTransactionEntity!.occurrenceType;
