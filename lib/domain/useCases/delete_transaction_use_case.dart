@@ -18,6 +18,22 @@ class DeleteTransactionUseCase {
         if (deleteType == DeleteType.ocurrence.id) {
           await transactionDb.addExcludedMonth(transactionId, monthKey);
         } else if (deleteType == DeleteType.serie.id) {
+          if (transactionEntity.recurrenceType == RecurrenceType.every.id) {
+            var transactionDueDate = transactionEntity.dueDate;
+            var splittedMonthKey = monthKey.split(":");
+            var month = int.parse(splittedMonthKey[0]);
+            var year = int.parse(splittedMonthKey[0]);
+
+            var isntFirstDueDate = transactionDueDate.month != month &&
+                transactionDueDate.year != year;
+
+            if (isntFirstDueDate) {
+              await transactionDb.addFinalDate(transactionId, monthKey);
+
+              return;
+            }
+          }
+
           await transactionDb.deleteTransaction(transactionId);
         }
       }

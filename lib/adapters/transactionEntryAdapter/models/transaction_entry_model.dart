@@ -6,7 +6,7 @@ part 'transaction_entry_model.g.dart';
 @Collection()
 class TransactionEntryModel {
   Id id = Isar.autoIncrement;
-  final DateTime? finalDate;
+  DateTime? finalDate;
   final int? installment;
   final String description;
   final double amount;
