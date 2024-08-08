@@ -5,7 +5,6 @@ import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 import 'package:simple_plan/domain/shared/enum/delete_type.dart';
 import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
 import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
-import 'package:simple_plan/domain/shared/utils/string_utils.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
 import 'package:simple_plan/domain/useCases/insert_transaction_entry_use_case.dart';
@@ -59,6 +58,10 @@ class _TransactionFormState extends State<TransactionForm> {
   late Color primaryColor;
   late double installmentAmount;
 
+  void setInstallmentAmount() {
+    installmentAmount = convertStringToDouble(amount) / installmentValue;
+  }
+
   Future _selectDate() async {
     DateTime? picked = await showDatePicker(
         context: context,
@@ -73,7 +76,7 @@ class _TransactionFormState extends State<TransactionForm> {
     }
   }
 
-  void updateDescription(value) {
+  void updateDescription(String value) {
     setState(() {
       description = value;
     });
@@ -83,7 +86,7 @@ class _TransactionFormState extends State<TransactionForm> {
     setState(() {
       amount = value;
       if (recurrenceValue == RecurrenceType.installment.id) {
-        installmentAmount = convertStringToDouble(amount) / installmentValue;
+        setInstallmentAmount();
       }
     });
   }
@@ -91,7 +94,7 @@ class _TransactionFormState extends State<TransactionForm> {
   void incrementInstallment() {
     setState(() {
       installmentValue++;
-      installmentAmount = convertStringToDouble(amount) / installmentValue;
+      setInstallmentAmount();
     });
   }
 
@@ -101,6 +104,13 @@ class _TransactionFormState extends State<TransactionForm> {
         installmentValue--;
         installmentAmount = convertStringToDouble(amount) / installmentValue;
       }
+    });
+  }
+
+  void handleChangeRecurrenceType(String? value) {
+    setState(() {
+      recurrenceValue = RecurrenceType.getRecurrenceByDesc(value!).id;
+      setInstallmentAmount();
     });
   }
 
@@ -166,7 +176,7 @@ class _TransactionFormState extends State<TransactionForm> {
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(
-          const SnackBar(content: Text('Processing Data')),
+          const SnackBar(content: Text('Processando...')),
         );
 
       var dateSplitted = dateController.text.split("/");
@@ -187,7 +197,7 @@ class _TransactionFormState extends State<TransactionForm> {
       try {
         await insertTransactionUseCase.execute(transactionEntity);
 
-        if (!context.mounted) return;
+        if (!mounted) return;
 
         ScaffoldMessenger.of(context)
           ..removeCurrentSnackBar()
@@ -228,6 +238,19 @@ class _TransactionFormState extends State<TransactionForm> {
       categoryValue = categoryList.first;
       installmentValue = 2;
       installmentAmount = 0;
+
+      if (widget.monthKey != null) {
+        var monthKeySplitted = widget.monthKey!.split(":");
+        var month = int.parse(monthKeySplitted[0]);
+        var year = int.parse(monthKeySplitted[1]);
+
+        if (month == currentDate.month && year == currentDate.year) {
+          dateController.text = formatadorData.format(currentDate);
+        } else {
+          var dueDate = DateTime(currentDate.year, month, 7);
+          dateController.text = formatadorData.format(dueDate);
+        }
+      }
     } else {
       occurenceType = widget.initialTransactionEntity!.occurrenceType;
       description = widget.initialTransactionEntity!.description;
@@ -267,7 +290,8 @@ class _TransactionFormState extends State<TransactionForm> {
           backgroundColor: primaryColor,
           title: Text(widget.screenTitle),
         ),
-        body: Form(
+        body: SingleChildScrollView(
+            child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,7 +349,7 @@ class _TransactionFormState extends State<TransactionForm> {
                         },
                         cursorColor: primaryColor,
                         initialValue: description,
-                        onChanged: (value) => {updateDescription(value)},
+                        onChanged: updateDescription,
                         decoration: InputDecoration(
                             icon: Icon(
                               Icons.description,
@@ -404,14 +428,7 @@ class _TransactionFormState extends State<TransactionForm> {
                                       decoration: const InputDecoration(
                                           hintText: "",
                                           border: InputBorder.none),
-                                      onChanged: (String? value) {
-                                        // This is called when the user selects an item.
-                                        setState(() {
-                                          recurrenceValue = RecurrenceType
-                                                  .getRecurrenceByDesc(value!)
-                                              .id;
-                                        });
-                                      },
+                                      onChanged: handleChangeRecurrenceType,
                                       items: recurrenceList
                                           .map<DropdownMenuItem<String>>(
                                               (RecurrenceType value) {
@@ -554,7 +571,7 @@ class _TransactionFormState extends State<TransactionForm> {
                   ))
             ],
           ),
-        ));
+        )));
   }
 }
 

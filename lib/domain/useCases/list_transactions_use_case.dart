@@ -12,8 +12,8 @@ class ListTransactionsUseCase {
     var month = int.parse(splittedMonthKey[0]);
     var year = int.parse(splittedMonthKey[1]);
     var lowerDate = DateTime(year, month, 1);
-    var upperDate = DateTime(
-        year, month + 1, 0); // this way, we can get the last day of month
+    var upperDate = DateTime(year, month + 1,
+        0); // month + 1 -> this way, we can get the last day of month
 
     var transactionsEntities =
         await transactionDb.listTransactions(lowerDate, upperDate);

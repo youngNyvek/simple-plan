@@ -146,7 +146,10 @@ class _HomeState extends State<Home> {
               incomes: _incomes),
           cashFlowByMonth()
         ])),
-        floatingActionButton: ExpandableFab(onGoBack: setupList));
+        floatingActionButton: ExpandableFab(
+          onGoBack: setupList,
+          monthKey: _monthKey,
+        ));
   }
 
   Widget selectedMonth() {

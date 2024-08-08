@@ -8,8 +8,6 @@ class MainOccurrenceDetails extends StatelessWidget {
   final IconData icon;
   final CrossAxisAlignment crossAxisAlignment;
 
-  final _expectedLabel = "Previsto";
-
   const MainOccurrenceDetails(
       {super.key,
       required this.primaryColor,

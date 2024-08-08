@@ -9,4 +9,12 @@ class StringUtils {
   static String getMonthKey(DateTime dateTime) {
     return "${dateTime.month}:${dateTime.year}";
   }
+
+  static DateTime getDateFromMonthKey(String monthKey) {
+    var splittedMonthKey = monthKey.split(":");
+    var month = int.parse(splittedMonthKey[0]);
+    var year = int.parse(splittedMonthKey[1]);
+
+    return DateTime(year, month, 1);
+  }
 }

@@ -1,14 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:simple_plan/presentation/screens/addTransaction/index.dart';
 import 'package:simple_plan/presentation/screens/home/components/fab_actionbutton.dart';
 import 'package:simple_plan/domain/shared/constants.dart';
 import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
 
 class ExpandableFab extends StatefulWidget {
   final FutureOr Function() onGoBack;
+  final String monthKey;
 
-  const ExpandableFab({super.key, required this.onGoBack});
+  const ExpandableFab(
+      {super.key, required this.onGoBack, required this.monthKey});
 
   @override
   State<ExpandableFab> createState() => _ExpandableFabState();
@@ -43,7 +46,11 @@ class _ExpandableFabState extends State<ExpandableFab> {
               label: Constants.addPlanLabel,
               onPressed: () => {
                     _toggle(),
-                    Navigator.pushNamed(context, '/addTransaction')
+                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AddTransaction(monthKey: widget.monthKey)))
                         .then((dadosAtualizados) {
                       widget.onGoBack();
                     })
