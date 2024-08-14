@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
 
 class CategoriesRow extends StatelessWidget {
   final List<String> categories;

@@ -1,6 +1,6 @@
 import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
-import 'package:simple_plan/domain/shared/enum/delete_type.dart';
-import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
+import 'package:simple_plan/domain/enums/delete_type.dart';
+import 'package:simple_plan/domain/enums/recurrence_type.dart';
 
 class DeleteTransactionUseCase {
   final TransactionEntryAdapter transactionDb = TransactionEntryAdapter();

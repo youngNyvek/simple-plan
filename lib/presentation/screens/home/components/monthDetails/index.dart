@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/presentation/constants/labels.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
 import 'package:simple_plan/presentation/screens/home/components/monthDetails/main_occurrence_details.dart';
 import 'package:simple_plan/presentation/screens/home/components/monthDetails/secondary_occurrence_details.dart';
 
@@ -69,7 +70,7 @@ class _MonthDetailState extends State<MonthDetail>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     currentValue: widget.currentExpenses,
                     icon: Icons.trending_down,
-                    label: "GASTOS",
+                    label: Labels.expense.toUpperCase(),
                     primaryColor: ThemeColors.red),
                 MainOccurrenceDetails(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,14 +78,14 @@ class _MonthDetailState extends State<MonthDetail>
                         widget.currentIncomes - widget.currentExpenses,
                     // expectedValue: widget.incomes - widget.expenses,
                     icon: Icons.trending_flat,
-                    label: "SALDO",
+                    label: Labels.balance.toUpperCase(),
                     primaryColor: ThemeColors.blue),
                 MainOccurrenceDetails(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     currentValue: widget.currentIncomes,
                     // expectedValue: widget.incomes,
                     icon: Icons.trending_up,
-                    label: "GANHOS",
+                    label: Labels.income.toUpperCase(),
                     primaryColor: ThemeColors.green),
               ],
             ),

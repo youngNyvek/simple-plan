@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
-import 'package:simple_plan/domain/shared/enum/delete_type.dart';
-import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
-import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/domain/enums/delete_type.dart';
+import 'package:simple_plan/domain/enums/occurence_type.dart';
+import 'package:simple_plan/domain/enums/recurrence_type.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
 import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
 import 'package:simple_plan/domain/useCases/insert_transaction_entry_use_case.dart';
 

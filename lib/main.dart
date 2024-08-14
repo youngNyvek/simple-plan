@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:simple_plan/adapters/isar_adapter_base.dart';
 import 'package:simple_plan/presentation/screens/addTransaction/index.dart';
 import 'package:simple_plan/presentation/screens/home/index.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
