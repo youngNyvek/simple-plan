@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_plan/domain/entities/category_tag_entity.dart';
 import 'package:simple_plan/presentation/constants/labels.dart';
 import 'package:simple_plan/presentation/constants/theme_colors.dart';
 import 'package:simple_plan/presentation/constants/theme_icons.dart';
@@ -12,7 +13,21 @@ class AddCategories extends StatefulWidget {
 }
 
 class _AddCategoriesState extends State<AddCategories> {
-  var listCategories = {1: "teste", 2: "teste"};
+  final listCategories = [
+    CategoryTagEntity(label: "Salário", ocurrenceType: 1),
+    CategoryTagEntity(label: "Proventos", ocurrenceType: 1),
+    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
+    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
+    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
+    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
+    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
+    CategoryTagEntity(label: "Salário", ocurrenceType: 1),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,20 +58,57 @@ class _AddCategoriesState extends State<AddCategories> {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: <Widget>[
             Center(
                 child: Column(
               children: [
                 Expanded(
                     flex: 1,
-                    child: Text("It's rainy here",
-                        style: TextStyle(color: ThemeColors.white))),
-                Text("It's rainy here",
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      width: double.infinity,
+                      child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          alignment: WrapAlignment.center,
+                          children: listCategories
+                              .map((entry) => Container(
+                                    color: ThemeColors.greenAlpha,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(entry.label.toUpperCase(),
+                                            textAlign: TextAlign.left,
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                color: ThemeColors.white)),
+                                        Container(
+                                          margin: const EdgeInsets.only(
+                                              left: 8, right: 6),
+                                          width: 1,
+                                          height: 18,
+                                          color: ThemeColors.whiteAlpha,
+                                        ),
+                                        const Icon(
+                                          Icons.close,
+                                          size: 18,
+                                          color: ThemeColors.white,
+                                        )
+                                      ],
+                                    ),
+                                  ))
+                              .toList()),
+                    )),
+                const Text("It's rainy here",
                     style: TextStyle(color: ThemeColors.white))
               ],
             )),
-            Center(
+            const Center(
               child: Text("It's rainy here"),
             ),
           ],
