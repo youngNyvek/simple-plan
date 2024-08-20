@@ -141,7 +141,7 @@ class _MonthDetailState extends State<MonthDetail>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Mais detalhes",
+                      showPicker ? "Menos detalhes" : "Mais detalhes",
                       style: TextStyle(color: Colors.white.withOpacity(0.5)),
                     ),
                     Icon(
