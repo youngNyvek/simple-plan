@@ -11,12 +11,31 @@ class InsertOrUpdateTransactionEntryUseCase {
     var currentDate = DateTime(
         currentDateTime.year, currentDateTime.month, currentDateTime.day);
 
+    var monthKey = "${entity.dueDate.month}:${entity.dueDate.year}";
+
     await transactionDb.executeInTransaction(() async {
-      var transactionId = await transactionDb.insertTransaction(entity);
+      int transactionId;
+
+      if (entity.id != null) {
+        await transactionDb.addFinalDate(entity.id!, monthKey);
+
+        var newEntity = TransactionEntryEntity(
+            excludedMonths: entity.excludedMonths,
+            installment: entity.installment,
+            description: entity.description,
+            amount: entity.amount,
+            dueDate: entity.dueDate,
+            occurrenceType: entity.occurrenceType,
+            done: entity.done,
+            categories: entity.categories,
+            recurrenceType: entity.recurrenceType);
+
+        transactionId = await transactionDb.insertTransaction(newEntity);
+      } else {
+        transactionId = await transactionDb.insertTransaction(entity);
+      }
 
       if (entity.dueDate == currentDate) {
-        var monthKey = "${entity.dueDate.month}:${entity.dueDate.year}";
-
         await doneTransactionDb.toggleDoneValue(monthKey, transactionId);
       }
     });
