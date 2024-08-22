@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_plan/domain/entities/category_tag_entity.dart';
+import 'package:simple_plan/domain/entities/category_entity.dart';
+import 'package:simple_plan/domain/enums/occurence_type.dart';
+import 'package:simple_plan/domain/useCases/delete_category_use_case.dart';
+import 'package:simple_plan/domain/useCases/list_categories_use_case.dart';
 import 'package:simple_plan/presentation/constants/labels.dart';
 import 'package:simple_plan/presentation/constants/theme_colors.dart';
 import 'package:simple_plan/presentation/constants/theme_icons.dart';
@@ -15,20 +18,35 @@ class AddCategories extends StatefulWidget {
 }
 
 class _AddCategoriesState extends State<AddCategories> {
-  final listCategories = [
-    CategoryTagEntity(label: "Salário", ocurrenceType: 1),
-    CategoryTagEntity(label: "Proventos", ocurrenceType: 1),
-    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
-    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
-    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
-    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
-    CategoryTagEntity(label: "Freelancer", ocurrenceType: 1),
-    CategoryTagEntity(label: "Salário", ocurrenceType: 1),
-  ];
+  final _listCategoriesUseCase = ListCategoriesUseCase();
+
+  late List<CategoryEntity> incomeCategoriesList;
+  late List<CategoryEntity> expenseCategoriesList;
+
+  Future<void> setupCategoryList() async {
+    var categories = await _listCategoriesUseCase.execute();
+
+    List<CategoryEntity> auxIncomeCategorie = [];
+    List<CategoryEntity> auxExpenseCategorie = [];
+
+    for (var categorie in categories) {
+      if (categorie.ocurrenceType == OccurrenceType.income.id) {
+        auxIncomeCategorie.add(categorie);
+      } else {
+        auxExpenseCategorie.add(categorie);
+      }
+    }
+
+    setState(() {
+      incomeCategoriesList = auxIncomeCategorie;
+      expenseCategoriesList = auxExpenseCategorie;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    setupCategoryList();
   }
 
   @override
@@ -62,10 +80,8 @@ class _AddCategoriesState extends State<AddCategories> {
         ),
         body: TabBarView(
           children: <Widget>[
-            CategoriesList(
-                color: ThemeColors.green, listCategories: listCategories),
-            CategoriesList(
-                color: ThemeColors.red, listCategories: listCategories),
+            CategoriesList(color: ThemeColors.green, listCategories: []),
+            CategoriesList(color: ThemeColors.red, listCategories: []),
           ],
         ),
       ),
