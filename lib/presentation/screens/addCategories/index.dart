@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_plan/domain/entities/category_entity.dart';
 import 'package:simple_plan/domain/enums/occurence_type.dart';
 import 'package:simple_plan/domain/useCases/delete_category_use_case.dart';
+import 'package:simple_plan/domain/useCases/insert_category_use_case.dart';
 import 'package:simple_plan/domain/useCases/list_categories_use_case.dart';
 import 'package:simple_plan/presentation/constants/labels.dart';
 import 'package:simple_plan/presentation/constants/theme_colors.dart';
@@ -19,9 +20,11 @@ class AddCategories extends StatefulWidget {
 
 class _AddCategoriesState extends State<AddCategories> {
   final _listCategoriesUseCase = ListCategoriesUseCase();
+  final _insertCategoryUseCase = InsertCategoryUseCase();
+  final _deleteCategoryUseCase = DeleteCategoryUseCase();
 
-  late List<CategoryEntity> incomeCategoriesList;
-  late List<CategoryEntity> expenseCategoriesList;
+  List<CategoryEntity> incomeCategoriesList = [];
+  List<CategoryEntity> expenseCategoriesList = [];
 
   Future<void> setupCategoryList() async {
     var categories = await _listCategoriesUseCase.execute();
@@ -41,6 +44,25 @@ class _AddCategoriesState extends State<AddCategories> {
       incomeCategoriesList = auxIncomeCategorie;
       expenseCategoriesList = auxExpenseCategorie;
     });
+  }
+
+  Future<void> addIncomeCategory(String label) async {
+    var category =
+        CategoryEntity(label: label, ocurrenceType: OccurrenceType.income.id);
+    await _insertCategoryUseCase.execute(category);
+    setupCategoryList();
+  }
+
+  Future<void> addExpenseCategory(String label) async {
+    var category =
+        CategoryEntity(label: label, ocurrenceType: OccurrenceType.expense.id);
+    await _insertCategoryUseCase.execute(category);
+    setupCategoryList();
+  }
+
+  Future<void> delete(int categoryId) async {
+    await _deleteCategoryUseCase.execute(categoryId);
+    setupCategoryList();
   }
 
   @override
@@ -79,9 +101,19 @@ class _AddCategoriesState extends State<AddCategories> {
           ),
         ),
         body: TabBarView(
-          children: <Widget>[
-            CategoriesList(color: ThemeColors.green, listCategories: []),
-            CategoriesList(color: ThemeColors.red, listCategories: []),
+          children: [
+            CategoriesList(
+              color: ThemeColors.green,
+              listCategories: incomeCategoriesList,
+              onSubmit: addIncomeCategory,
+              onCloseTap: delete,
+            ),
+            CategoriesList(
+              color: ThemeColors.red,
+              listCategories: expenseCategoriesList,
+              onSubmit: addExpenseCategory,
+              onCloseTap: delete,
+            ),
           ],
         ),
       ),

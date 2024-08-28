@@ -20,7 +20,7 @@ class CategoryModel {
         excluded = null;
 
   CategoryEntity toEntity() {
-    return CategoryEntity(label: label, ocurrenceType: ocurrenceType);
+    return CategoryEntity(id: id, label: label, ocurrenceType: ocurrenceType);
   }
 }
 

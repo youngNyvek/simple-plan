@@ -5,8 +5,13 @@ import '../../constants/theme_colors.dart';
 class CategorieTag extends StatelessWidget {
   final String label;
   final Color color;
+  final void Function() onCloseTap;
 
-  const CategorieTag({super.key, required this.label, required this.color});
+  const CategorieTag(
+      {super.key,
+      required this.label,
+      required this.color,
+      required this.onCloseTap});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,7 @@ class CategorieTag extends StatelessWidget {
       decoration: BoxDecoration(
           border: Border.all(width: 1, color: color),
           borderRadius: BorderRadius.circular(4)),
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      padding: const EdgeInsets.only(left: 8),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -23,15 +28,24 @@ class CategorieTag extends StatelessWidget {
               textAlign: TextAlign.left,
               style: TextStyle(fontSize: 12, color: color)),
           Container(
-            margin: const EdgeInsets.only(left: 8, right: 6),
+            margin: const EdgeInsets.only(left: 12),
             width: 1,
             height: 18,
             color: color,
           ),
-          const Icon(
-            Icons.close,
-            size: 18,
-            color: ThemeColors.white,
+          SizedBox(
+            height: 30,
+            width: 30,
+            child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minHeight: 25, minWidth: 25),
+                onPressed: onCloseTap,
+                color: Colors.white,
+                icon: const Icon(
+                  Icons.close,
+                  size: 18,
+                  color: ThemeColors.white,
+                )),
           )
         ],
       ),
