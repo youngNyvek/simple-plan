@@ -6,10 +6,19 @@ import 'package:simple_plan/domain/entities/category_entity.dart';
 class CategoryAdapter extends IsarAdapterBase {
   static final db = IsarAdapterBase.db;
 
-  Future<List<CategoryEntity>> list() async {
-    var categoryModels = await db.categoryModels.where().findAll();
+  Future<List<CategoryEntity>> list(int? occurrenceType) async {
+    if (occurrenceType != null) {
+      var categoryModels = await db.categoryModels
+          .filter()
+          .ocurrenceTypeEqualTo(occurrenceType)
+          .findAll();
 
-    return categoryModels.toEntity();
+      return categoryModels.toEntity();
+    } else {
+      var categoryModels = await db.categoryModels.where().findAll();
+
+      return categoryModels.toEntity();
+    }
   }
 
   Future<int> insert(CategoryEntity entity) async {

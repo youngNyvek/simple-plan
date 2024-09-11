@@ -27,7 +27,7 @@ class _AddCategoriesState extends State<AddCategories> {
   List<CategoryEntity> expenseCategoriesList = [];
 
   Future<void> setupCategoryList() async {
-    var categories = await _listCategoriesUseCase.execute();
+    var categories = await _listCategoriesUseCase.execute(null);
 
     List<CategoryEntity> auxIncomeCategorie = [];
     List<CategoryEntity> auxExpenseCategorie = [];
@@ -77,6 +77,7 @@ class _AddCategoriesState extends State<AddCategories> {
       initialIndex: 0,
       length: 2,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text(
             'Categorias',

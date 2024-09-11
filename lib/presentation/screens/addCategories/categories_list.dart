@@ -35,6 +35,10 @@ class CategoriesListState extends State<CategoriesList> {
     });
   }
 
+  void handleClose(CategoryEntity entry) {
+    widget.onCloseTap(entry.id!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -52,9 +56,11 @@ class CategoriesListState extends State<CategoriesList> {
                   .map((entry) => CategorieTag(
                       label: entry.label,
                       color: widget.color,
-                      onCloseTap: () {
-                        widget.onCloseTap(entry.id!);
-                      }))
+                      onCloseTap: widget.listCategories.length > 1
+                          ? () {
+                              handleClose(entry);
+                            }
+                          : null))
                   .toList(),
             ),
           ),

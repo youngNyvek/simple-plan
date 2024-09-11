@@ -5,7 +5,7 @@ import '../../constants/theme_colors.dart';
 class CategorieTag extends StatelessWidget {
   final String label;
   final Color color;
-  final void Function() onCloseTap;
+  final void Function()? onCloseTap;
 
   const CategorieTag(
       {super.key,
@@ -41,10 +41,10 @@ class CategorieTag extends StatelessWidget {
                 constraints: const BoxConstraints(minHeight: 25, minWidth: 25),
                 onPressed: onCloseTap,
                 color: Colors.white,
+                disabledColor: ThemeColors.whiteAlpha,
                 icon: const Icon(
                   Icons.close,
                   size: 18,
-                  color: ThemeColors.white,
                 )),
           )
         ],
