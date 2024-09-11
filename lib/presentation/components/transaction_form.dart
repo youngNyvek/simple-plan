@@ -254,6 +254,7 @@ class _TransactionFormState extends State<TransactionForm> {
       description = widget.initialTransactionEntity!.description;
       recurrenceValue = widget.initialTransactionEntity!.recurrenceType;
       categoryValue = widget.initialTransactionEntity!.categories[0];
+      categoryList = widget.initialTransactionEntity!.categories;
       installmentValue = widget.initialTransactionEntity!.installment ?? 2;
       amount =
           formatadorDecimal.format(widget.initialTransactionEntity!.amount);

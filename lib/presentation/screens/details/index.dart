@@ -126,8 +126,12 @@ class _DetailScreenState extends State<DetailScreen> {
   void initState() {
     super.initState();
 
-    transactionEntryEntity = widget.transactionEntryEntity
-      ..dueDate = widget.transactionEntryEntity.getDueDate(widget.selectedDate);
+    transactionEntryEntity = widget.transactionEntryEntity;
+
+    if (widget.transactionEntryEntity.installment == null) {
+      transactionEntryEntity.dueDate =
+          widget.transactionEntryEntity.getDueDate(widget.selectedDate);
+    }
 
     monthKey = StringUtils.getMonthKey(widget.selectedDate);
 
