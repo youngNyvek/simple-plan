@@ -77,7 +77,6 @@ class _AddCategoriesState extends State<AddCategories> {
       initialIndex: 0,
       length: 2,
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text(
             'Categorias',
