@@ -130,40 +130,34 @@ class _TransactionFormState extends State<TransactionForm> {
     return double.parse(value.replaceAll('.', '').replaceAll(',', '.'));
   }
 
-  void handleEditOcurrence() {
+  Future<void> handleEditOcurrence() async {
     setState(() {
       recurrenceValue = RecurrenceType.none.id;
     });
-    submitForm(null);
+    await handleDeleteAndCreateNew();
+  }
+
+  Future<void> handleDeleteAndCreateNew() async {
+    await submitForm(null);
     deleteTransactionUseCase.execute(widget.monthKey!,
         widget.initialTransactionEntity!.id!, DeleteType.ocurrence.id);
-    Navigator.pop(context);
   }
 
   void handleSubmitForm() async {
-    if (widget.formType == 2 &&
-        widget.initialTransactionEntity!.recurrenceType ==
-            RecurrenceType.every.id) {
-      showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                        onPressed: handleEditOcurrence,
-                        child: const Text('Editar ocorrência')),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          submitForm(widget.initialTransactionEntity!.id);
-                        },
-                        child: const Text('Editar série'))
-                  ],
-                ));
-          });
+    if (widget.formType == 2) {
+      var currentRecurrenceType =
+          widget.initialTransactionEntity!.recurrenceType;
+
+      if (currentRecurrenceType == RecurrenceType.every.id) {
+        await showModalBottomSheet(
+            context: context, builder: buildFloatOptions);
+      } else if (currentRecurrenceType == RecurrenceType.none.id) {
+        await handleEditOcurrence();
+      } else if (currentRecurrenceType == RecurrenceType.installment.id) {
+        await handleDeleteAndCreateNew();
+      }
+
+      if (!mounted) return;
     } else {
       submitForm(widget.initialTransactionEntity?.id);
     }
@@ -588,6 +582,25 @@ class _TransactionFormState extends State<TransactionForm> {
             ],
           ),
         )));
+  }
+
+  Widget buildFloatOptions(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+                onPressed: handleEditOcurrence,
+                child: const Text('Editar ocorrência')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  submitForm(widget.initialTransactionEntity!.id);
+                },
+                child: const Text('Editar série'))
+          ],
+        ));
   }
 }
 
