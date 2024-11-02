@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:simple_plan/adapters/isar_adapter_base.dart';
+import 'package:simple_plan/adapters/notificationAdapter/notification_adapter.dart';
 import 'package:simple_plan/presentation/screens/addTransaction/index.dart';
 import 'package:simple_plan/presentation/screens/home/index.dart';
 import 'package:simple_plan/presentation/constants/theme_colors.dart';
@@ -9,6 +10,7 @@ import 'package:simple_plan/presentation/constants/theme_colors.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await IsarAdapterBase.initialize();
+  await NotificationAdapter.initialize();
 
   runApp(const MyApp());
 }
