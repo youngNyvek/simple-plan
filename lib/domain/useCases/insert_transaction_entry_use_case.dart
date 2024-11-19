@@ -41,7 +41,7 @@ class InsertOrUpdateTransactionEntryUseCase {
         await doneTransactionDb.toggleDoneValue(monthKey, transactionId);
       }
 
-      await NotificationAdapter.scheduleNotification(entity.dueDate);
+      // await NotificationAdapter.scheduleNotification(entity.dueDate);
     });
   }
 }

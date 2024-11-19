@@ -76,9 +76,7 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   void handleDeleteTransaction() {
-    if (transactionEntryEntity.recurrenceType == RecurrenceType.none.id) {
-      deleteTransaction(DeleteType.ocurrence.id);
-    } else {
+    if (transactionEntryEntity.recurrenceType == RecurrenceType.every.id) {
       showModalBottomSheet(
           context: context,
           builder: (BuildContext context) {
@@ -103,6 +101,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   ],
                 ));
           });
+    } else {
+      deleteTransaction(DeleteType.ocurrence.id);
     }
   }
 
