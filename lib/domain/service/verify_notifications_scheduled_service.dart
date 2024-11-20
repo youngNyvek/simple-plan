@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:simple_plan/adapters/isar_adapter_base.dart';
 import 'package:simple_plan/adapters/pushNotificationAdapter/push_notification_adapter.dart';
 import 'package:simple_plan/adapters/scheduledNotificationAdapter/scheduled_notification_adapter.dart';
 import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
@@ -14,7 +15,6 @@ class VerifyNotificationsScheduledService {
       TransactionEntryAdapter();
 
   Future<void> execute() async {
-    log("executou cron");
     var notifications = await _scheduledNotificationAdapter.listNotifications();
 
     if (notifications.isEmpty) return;
@@ -28,7 +28,7 @@ class VerifyNotificationsScheduledService {
         (await _transactionEntryAdapter.listTransactions(lowerDate, upperDate))
             .where((t) => t.occurrenceType == OccurrenceType.expense.id);
 
-    var notificationsToDelete = List<int>.empty();
+    List<int> notificationsToDelete = [];
 
     for (var notification in notifications) {
       var needNotification = false;
@@ -44,7 +44,7 @@ class VerifyNotificationsScheduledService {
 
       if (needNotification) {
         var notifyDate = DateTime(
-            currentDate.year, currentDate.month, notification.notificationDay);
+            nextMonth.year, nextMonth.month, notification.notificationDay);
 
         PushNotificationAdapter.scheduleDefaultNotifications(notifyDate);
       } else {
@@ -52,9 +52,11 @@ class VerifyNotificationsScheduledService {
       }
     }
 
-    if (notificationsToDelete.isNotEmpty) {
-      await _scheduledNotificationAdapter
-          .deleteNotification(notificationsToDelete);
-    }
+    await _scheduledNotificationAdapter.executeInTransaction(() async {
+      if (notificationsToDelete.isNotEmpty) {
+        await _scheduledNotificationAdapter
+            .deleteNotification(notificationsToDelete);
+      }
+    });
   }
 }

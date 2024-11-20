@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -39,9 +41,9 @@ class PushNotificationAdapter {
   }
 
   static Future<void> scheduleNotification(
-      DateTime dueDate, String title, String body) async {
+      DateTime dueDate, String title, String body, int id) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
+        id,
         title,
         body,
         tz.TZDateTime(tz.local, dueDate.year, dueDate.month, dueDate.day, 6),
@@ -59,10 +61,16 @@ class PushNotificationAdapter {
       PushNotificationAdapter.scheduleNotification(
           notifyDate.add(const Duration(days: -3)),
           'Não se esqueça',
-          'Alguns pagamentos vencem daqui a 3 dias!');
+          'Alguns pagamentos vencem daqui a 3 dias!',
+          200 + notifyDate.day);
     }
 
-    PushNotificationAdapter.scheduleNotification(
-        notifyDate, 'Alguns pagamentos vencem hoje!', 'Entre no app e veja');
+    if (dateDiff.inDays >= 1) {
+      PushNotificationAdapter.scheduleNotification(
+          notifyDate,
+          'Alguns pagamentos vencem hoje!',
+          'Entre no app e veja',
+          100 + notifyDate.day);
+    }
   }
 }

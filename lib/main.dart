@@ -18,11 +18,8 @@ void main() async {
   final verifyNotificationsScheduledService =
       VerifyNotificationsScheduledService();
 
-  // cron.schedule(Schedule.parse('0 0 28 * *'),
-  //     verifyNotificationsScheduledService.execute);
-
-  cron.schedule(
-      Schedule.parse('* * * * *'), verifyNotificationsScheduledService.execute);
+  cron.schedule(Schedule.parse('0 0 28 * *'),
+      verifyNotificationsScheduledService.execute);
 
   runApp(const MyApp());
 }

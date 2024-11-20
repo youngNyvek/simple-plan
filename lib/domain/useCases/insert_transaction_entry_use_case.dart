@@ -4,7 +4,7 @@ import 'package:simple_plan/adapters/scheduledNotificationAdapter/scheduled_noti
 import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
 import 'package:simple_plan/domain/entities/notification_entity.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:simple_plan/domain/enums/occurence_type.dart';
 
 class InsertOrUpdateTransactionEntryUseCase {
   final TransactionEntryAdapter transactionDb = TransactionEntryAdapter();
@@ -45,12 +45,15 @@ class InsertOrUpdateTransactionEntryUseCase {
         await doneTransactionDb.toggleDoneValue(monthKey, transactionId);
       }
 
-      await PushNotificationAdapter.scheduleDefaultNotifications(
-          entity.dueDate);
+      if (entity.occurrenceType == OccurrenceType.expense.id) {
+        await PushNotificationAdapter.scheduleDefaultNotifications(
+            entity.dueDate);
 
-      var notificationEntity =
-          ScheduledNotificationEntity(notificationDay: entity.dueDate.day);
-      await scheduledNotificationAdapter.insertNotification(notificationEntity);
+        var notificationEntity =
+            ScheduledNotificationEntity(notificationDay: entity.dueDate.day);
+        await scheduledNotificationAdapter
+            .insertNotification(notificationEntity);
+      }
     });
   }
 }
