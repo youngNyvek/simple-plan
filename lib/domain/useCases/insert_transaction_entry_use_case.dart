@@ -1,12 +1,16 @@
 import 'package:simple_plan/adapters/doneTransactionAdapter/done_transaction_adapter.dart';
-import 'package:simple_plan/adapters/notificationAdapter/notification_adapter.dart';
+import 'package:simple_plan/adapters/pushNotificationAdapter/push_notification_adapter.dart';
+import 'package:simple_plan/adapters/scheduledNotificationAdapter/scheduled_notification_adapter.dart';
 import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
+import 'package:simple_plan/domain/entities/notification_entity.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class InsertOrUpdateTransactionEntryUseCase {
   final TransactionEntryAdapter transactionDb = TransactionEntryAdapter();
   final DoneTransactionAdapter doneTransactionDb = DoneTransactionAdapter();
+  final ScheduledNotificationAdapter scheduledNotificationAdapter =
+      ScheduledNotificationAdapter();
 
   Future<void> execute(TransactionEntryEntity entity) async {
     var currentDateTime = DateTime.now();
@@ -41,7 +45,12 @@ class InsertOrUpdateTransactionEntryUseCase {
         await doneTransactionDb.toggleDoneValue(monthKey, transactionId);
       }
 
-      // await NotificationAdapter.scheduleNotification(entity.dueDate);
+      await PushNotificationAdapter.scheduleDefaultNotifications(
+          entity.dueDate);
+
+      var notificationEntity =
+          ScheduledNotificationEntity(notificationDay: entity.dueDate.day);
+      await scheduledNotificationAdapter.insertNotification(notificationEntity);
     });
   }
 }

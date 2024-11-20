@@ -3,7 +3,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-class NotificationAdapter {
+class PushNotificationAdapter {
   static late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   static late NotificationDetails notificationDetails;
 
@@ -38,21 +38,31 @@ class NotificationAdapter {
     tz.setLocalLocation(tz.getLocation(currentTimeZone));
   }
 
-  // static Future<void> showNotification() async {
-  //   await flutterLocalNotificationsPlugin.show(
-  //       0, 'plain title', 'plain body', notificationDetails,
-  //       payload: 'item x');
-  // }
-
-  static Future<void> scheduleNotification(DateTime dueDate) async {
+  static Future<void> scheduleNotification(
+      DateTime dueDate, String title, String body) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
-        'Alguns pagamentos vencem hoje!',
-        'Entre no app e veja',
+        title,
+        body,
         tz.TZDateTime(tz.local, dueDate.year, dueDate.month, dueDate.day, 6),
         notificationDetails,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
+  }
+
+  static Future<void> scheduleDefaultNotifications(DateTime notifyDate) async {
+    var currentDate = DateTime.now();
+    var dateDiff = notifyDate.difference(currentDate);
+
+    if (dateDiff.inDays >= 3) {
+      PushNotificationAdapter.scheduleNotification(
+          notifyDate.add(const Duration(days: -3)),
+          'Não se esqueça',
+          'Alguns pagamentos vencem daqui a 3 dias!');
+    }
+
+    PushNotificationAdapter.scheduleNotification(
+        notifyDate, 'Alguns pagamentos vencem hoje!', 'Entre no app e veja');
   }
 }
