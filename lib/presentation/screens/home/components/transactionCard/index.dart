@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/domain/enums/occurence_type.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
+import 'package:simple_plan/presentation/constants/theme_icons.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/amount_row.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/categories_row.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/done_flag.dart';
@@ -31,8 +32,8 @@ class TransactionCard extends StatelessWidget {
       child: Row(children: [
         Icon(
           occurrenceType == OccurrenceType.expense.id
-              ? Icons.arrow_circle_down_rounded
-              : Icons.arrow_circle_up_rounded,
+              ? ThemeIcons.expense
+              : ThemeIcons.income,
           size: 24,
           color: occurrenceType == OccurrenceType.expense.id
               ? ThemeColors.red

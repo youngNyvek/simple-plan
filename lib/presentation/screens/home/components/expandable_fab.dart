@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:simple_plan/presentation/screens/addCategories/index.dart';
 import 'package:simple_plan/presentation/screens/addTransaction/index.dart';
 import 'package:simple_plan/presentation/screens/home/components/fab_actionbutton.dart';
-import 'package:simple_plan/domain/shared/constants.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/presentation/constants/labels.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
 
 class ExpandableFab extends StatefulWidget {
   final FutureOr Function() onGoBack;
@@ -43,7 +44,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
               isOpen: _open,
               right: 70,
               icon: const Icon(Icons.library_add),
-              label: Constants.addPlanLabel,
+              label: Labels.addPlanLabel,
               onPressed: () => {
                     _toggle(),
                     Navigator.push(
@@ -60,7 +61,15 @@ class _ExpandableFabState extends State<ExpandableFab> {
               bottom: 70,
               icon: const Icon(Icons.group_work),
               label: "Nova Categoria",
-              onPressed: () => {}),
+              onPressed: () => {
+                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AddCategories()))
+                        .then((dadosAtualizados) {
+                      widget.onGoBack();
+                    })
+                  }),
           _exapandButton()
         ],
       ),

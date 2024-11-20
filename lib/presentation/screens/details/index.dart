@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
-import 'package:simple_plan/domain/shared/enum/delete_type.dart';
-import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
-import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
+import 'package:simple_plan/domain/enums/delete_type.dart';
+import 'package:simple_plan/domain/enums/occurence_type.dart';
+import 'package:simple_plan/domain/enums/recurrence_type.dart';
 import 'package:simple_plan/domain/shared/utils/string_utils.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
 import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
 import 'package:simple_plan/domain/useCases/toggle_done_value_use_case.dart';
+import 'package:simple_plan/presentation/constants/theme_icons.dart';
 import 'package:simple_plan/presentation/screens/editTransaction/index.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -75,9 +76,7 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   void handleDeleteTransaction() {
-    if (transactionEntryEntity.recurrenceType == RecurrenceType.none.id) {
-      deleteTransaction(DeleteType.ocurrence.id);
-    } else {
+    if (transactionEntryEntity.recurrenceType == RecurrenceType.every.id) {
       showModalBottomSheet(
           context: context,
           builder: (BuildContext context) {
@@ -102,6 +101,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   ],
                 ));
           });
+    } else {
+      deleteTransaction(DeleteType.ocurrence.id);
     }
   }
 
@@ -125,8 +126,12 @@ class _DetailScreenState extends State<DetailScreen> {
   void initState() {
     super.initState();
 
-    transactionEntryEntity = widget.transactionEntryEntity
-      ..dueDate = widget.transactionEntryEntity.getDueDate(widget.selectedDate);
+    transactionEntryEntity = widget.transactionEntryEntity;
+
+    if (widget.transactionEntryEntity.installment == null) {
+      transactionEntryEntity.dueDate =
+          widget.transactionEntryEntity.getDueDate(widget.selectedDate);
+    }
 
     monthKey = StringUtils.getMonthKey(widget.selectedDate);
 
@@ -183,8 +188,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   Icon(
                       transactionEntryEntity.occurrenceType ==
                               OccurrenceType.expense.id
-                          ? Icons.arrow_circle_down_rounded
-                          : Icons.arrow_circle_up_rounded,
+                          ? ThemeIcons.expense
+                          : ThemeIcons.income,
                       size: 28,
                       color: primaryColor)
                 ],

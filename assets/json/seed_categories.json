@@ -1,0 +1,10 @@
+[
+  {
+  "label": "Salário",
+  "ocurrenceType": 1
+  },
+  {
+  "label": "Custo Fixo",
+  "ocurrenceType": 2
+  }
+]

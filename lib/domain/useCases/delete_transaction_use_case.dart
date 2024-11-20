@@ -1,6 +1,6 @@
 import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
-import 'package:simple_plan/domain/shared/enum/delete_type.dart';
-import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
+import 'package:simple_plan/domain/enums/delete_type.dart';
+import 'package:simple_plan/domain/enums/recurrence_type.dart';
 
 class DeleteTransactionUseCase {
   final TransactionEntryAdapter transactionDb = TransactionEntryAdapter();
@@ -12,7 +12,8 @@ class DeleteTransactionUseCase {
     if (transactionEntity == null) return;
 
     await transactionDb.executeInTransaction(() async {
-      if (transactionEntity.recurrenceType == RecurrenceType.none.id) {
+      if (transactionEntity.recurrenceType == RecurrenceType.none.id ||
+          transactionEntity.recurrenceType == RecurrenceType.installment.id) {
         await transactionDb.deleteTransaction(transactionId);
       } else {
         if (deleteType == DeleteType.ocurrence.id) {
@@ -29,12 +30,10 @@ class DeleteTransactionUseCase {
 
             if (isntFirstDueDate) {
               await transactionDb.addFinalDate(transactionId, monthKey);
-
-              return;
+            } else {
+              await transactionDb.deleteTransaction(transactionId);
             }
           }
-
-          await transactionDb.deleteTransaction(transactionId);
         }
       }
     });

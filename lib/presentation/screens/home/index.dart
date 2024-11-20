@@ -5,9 +5,9 @@ import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 import 'package:simple_plan/domain/useCases/list_transactions_use_case.dart';
 import 'package:simple_plan/presentation/screens/details/index.dart';
 import 'package:simple_plan/presentation/screens/home/components/expandable_fab.dart';
-import 'package:simple_plan/domain/shared/enum/months.dart';
-import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/domain/enums/months.dart';
+import 'package:simple_plan/domain/enums/occurence_type.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
 import 'package:simple_plan/presentation/screens/home/components/monthDetails/index.dart';
 import 'package:simple_plan/presentation/screens/home/components/transactionCard/index.dart';
 

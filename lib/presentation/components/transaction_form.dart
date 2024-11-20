@@ -2,23 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
-import 'package:simple_plan/domain/shared/enum/delete_type.dart';
-import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
-import 'package:simple_plan/domain/shared/enum/recurrence_type.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/domain/enums/delete_type.dart';
+import 'package:simple_plan/domain/enums/occurence_type.dart';
+import 'package:simple_plan/domain/enums/recurrence_type.dart';
+import 'package:simple_plan/domain/useCases/list_categories_use_case.dart';
+import 'package:simple_plan/presentation/constants/messages.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
 import 'package:simple_plan/domain/useCases/delete_transaction_use_case.dart';
 import 'package:simple_plan/domain/useCases/insert_transaction_entry_use_case.dart';
 
-const List<String> categoryList = <String>[
-  'Custo Fixo',
-  'Conforto',
-  'Metas',
-  'Prazeres',
-  'Conhecimento',
-  'Liberdade Finânceira'
-];
-
-const requiredField = "Obrigatório";
+const loading = "Carregando...";
 
 class TransactionForm extends StatefulWidget {
   final String screenTitle;
@@ -38,10 +31,12 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionFormState extends State<TransactionForm> {
-  final _formKey = GlobalKey<FormState>();
-  final formatadorData = DateFormat("dd/MM/yyyy");
   final insertTransactionUseCase = InsertOrUpdateTransactionEntryUseCase();
   final deleteTransactionUseCase = DeleteTransactionUseCase();
+  final listCategoriesUseCase = ListCategoriesUseCase();
+
+  final _formKey = GlobalKey<FormState>();
+  final formatadorData = DateFormat("dd/MM/yyyy");
   final recurrenceList = RecurrenceType.recurrenceList;
   final formatadorDecimal = NumberFormat("#,##0.00", "pt_BR");
 
@@ -57,6 +52,7 @@ class _TransactionFormState extends State<TransactionForm> {
   late int installmentValue;
   late Color primaryColor;
   late double installmentAmount;
+  List<String> categoryList = [loading];
 
   void setInstallmentAmount() {
     installmentAmount = convertStringToDouble(amount) / installmentValue;
@@ -125,6 +121,8 @@ class _TransactionFormState extends State<TransactionForm> {
           primaryColor = ThemeColors.red;
         }
       }
+
+      setupCategoryList();
     });
   }
 
@@ -132,40 +130,34 @@ class _TransactionFormState extends State<TransactionForm> {
     return double.parse(value.replaceAll('.', '').replaceAll(',', '.'));
   }
 
-  void handleEditOcurrence() {
+  Future<void> handleEditOcurrence() async {
     setState(() {
       recurrenceValue = RecurrenceType.none.id;
     });
-    submitForm(null);
+    await handleDeleteAndCreateNew();
+  }
+
+  Future<void> handleDeleteAndCreateNew() async {
+    await submitForm(null);
     deleteTransactionUseCase.execute(widget.monthKey!,
         widget.initialTransactionEntity!.id!, DeleteType.ocurrence.id);
-    Navigator.pop(context);
   }
 
   void handleSubmitForm() async {
-    if (widget.formType == 2 &&
-        widget.initialTransactionEntity!.recurrenceType ==
-            RecurrenceType.every.id) {
-      showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                        onPressed: handleEditOcurrence,
-                        child: const Text('Editar ocorrência')),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          submitForm(widget.initialTransactionEntity!.id);
-                        },
-                        child: const Text('Editar série'))
-                  ],
-                ));
-          });
+    if (widget.formType == 2) {
+      var currentRecurrenceType =
+          widget.initialTransactionEntity!.recurrenceType;
+
+      if (currentRecurrenceType == RecurrenceType.every.id) {
+        await showModalBottomSheet(
+            context: context, builder: buildFloatOptions);
+      } else if (currentRecurrenceType == RecurrenceType.none.id) {
+        await handleEditOcurrence();
+      } else if (currentRecurrenceType == RecurrenceType.installment.id) {
+        await handleDeleteAndCreateNew();
+      }
+
+      if (!mounted) return;
     } else {
       submitForm(widget.initialTransactionEntity?.id);
     }
@@ -256,6 +248,7 @@ class _TransactionFormState extends State<TransactionForm> {
       description = widget.initialTransactionEntity!.description;
       recurrenceValue = widget.initialTransactionEntity!.recurrenceType;
       categoryValue = widget.initialTransactionEntity!.categories[0];
+      categoryList = widget.initialTransactionEntity!.categories;
       installmentValue = widget.initialTransactionEntity!.installment ?? 2;
       amount =
           formatadorDecimal.format(widget.initialTransactionEntity!.amount);
@@ -269,11 +262,28 @@ class _TransactionFormState extends State<TransactionForm> {
       }
     }
 
+    setupCategoryList();
+
     if (widget.formType == 2) {
       primaryColor = ThemeColors.blue;
     } else {
       primaryColor = ThemeColors.green;
     }
+  }
+
+  Future<void> setupCategoryList() async {
+    var categoryListEntity =
+        (await listCategoriesUseCase.execute(occurenceType))
+            .map((c) => c.label);
+
+    Set<String> categoriesSet;
+
+    categoriesSet = <String>{...categoryListEntity};
+
+    setState(() {
+      categoryList = categoriesSet.toList();
+      categoryValue = categoryList.first;
+    });
   }
 
   @override
@@ -572,6 +582,25 @@ class _TransactionFormState extends State<TransactionForm> {
             ],
           ),
         )));
+  }
+
+  Widget buildFloatOptions(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+                onPressed: handleEditOcurrence,
+                child: const Text('Editar ocorrência')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  submitForm(widget.initialTransactionEntity!.id);
+                },
+                child: const Text('Editar série'))
+          ],
+        ));
   }
 }
 

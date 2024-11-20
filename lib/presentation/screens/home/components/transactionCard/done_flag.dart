@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:simple_plan/domain/shared/enum/occurence_type.dart';
-import 'package:simple_plan/domain/shared/utils/theme_colors.dart';
+import 'package:simple_plan/domain/enums/occurence_type.dart';
+import 'package:simple_plan/presentation/constants/theme_colors.dart';
 
 class DoneFlag extends StatelessWidget {
   final bool done;
