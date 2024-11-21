@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:simple_plan/adapters/isar_adapter_base.dart';
 import 'package:simple_plan/adapters/pushNotificationAdapter/push_notification_adapter.dart';
-import 'package:simple_plan/domain/service/verify_notifications_scheduled_service.dart';
+import 'package:simple_plan/domain/services/verify_notifications_scheduled_service.dart';
 import 'package:simple_plan/presentation/screens/addTransaction/index.dart';
 import 'package:simple_plan/presentation/screens/home/index.dart';
 import 'package:simple_plan/presentation/constants/theme_colors.dart';

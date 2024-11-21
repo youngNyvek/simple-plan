@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
+import 'package:simple_plan/domain/useCases/get_month_details_use_case/index.dart';
 import 'package:simple_plan/domain/useCases/list_transactions_use_case.dart';
 import 'package:simple_plan/presentation/screens/details/index.dart';
 import 'package:simple_plan/presentation/screens/home/components/expandable_fab.dart';
@@ -21,6 +22,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final _now = DateTime.now();
   final listTransactionsUseCase = ListTransactionsUseCase();
+  final getMonthDetailsUseCase = GetMonthDetailsUseCase();
 
   bool _floatingButtonIsOpened = false;
   late int _selectedMonth = _now.month;
@@ -34,53 +36,15 @@ class _HomeState extends State<Home> {
   late List<TransactionEntryEntity> transactionList = [];
 
   Future<void> setupList() async {
-    var returnedList = await listTransactionsUseCase.execute(_monthKey);
-
-    var filteredExpenses = returnedList.where(
-        (element) => element.occurrenceType == OccurrenceType.expense.id);
-
-    var filteredIncomes = returnedList
-        .where((element) => element.occurrenceType == OccurrenceType.income.id);
+    var monthDetails = await getMonthDetailsUseCase.execute(_monthKey);
+    var returnedTransactions = await listTransactionsUseCase.execute(_monthKey);
 
     setState(() {
-      transactionList = returnedList;
-      if (filteredExpenses.isNotEmpty) {
-        _expenses = filteredExpenses
-            .map((element) => element.amount)
-            .reduce((value, element) => value + element);
-
-        var doneExpenses = filteredExpenses.where((element) => element.done);
-
-        if (doneExpenses.isNotEmpty) {
-          _currentExpenses = doneExpenses
-              .map((element) => element.amount)
-              .reduce((value, element) => value + element);
-        } else {
-          _currentExpenses = 0;
-        }
-      } else {
-        _expenses = 0;
-        _currentExpenses = 0;
-      }
-
-      if (filteredIncomes.isNotEmpty) {
-        _incomes = filteredIncomes
-            .map((element) => element.amount)
-            .reduce((value, element) => value + element);
-
-        var doneIncomes = filteredIncomes.where((element) => element.done);
-
-        if (doneIncomes.isNotEmpty) {
-          _currentIncomes = doneIncomes
-              .map((element) => element.amount)
-              .reduce((value, element) => value + element);
-        } else {
-          _currentIncomes = 0;
-        }
-      } else {
-        _incomes = 0;
-        _currentIncomes = 0;
-      }
+      _expenses = monthDetails.predictedExpenses;
+      _currentExpenses = monthDetails.currentExpenses;
+      _currentIncomes = monthDetails.currentIncomes;
+      _incomes = monthDetails.predictedIncomes;
+      transactionList = returnedTransactions;
     });
   }
 
