@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
-import 'package:simple_plan/adapters/doneTransactionAdapter/models/done_transaction_model.dart';
-import 'package:simple_plan/adapters/isar_adapter_base.dart';
+import 'package:simple_plan/adapters/isarAdapter/doneTransactions/models/done_transaction_model.dart';
+import 'package:simple_plan/adapters/isarAdapter/isar_adapter_base.dart';
 import 'package:simple_plan/domain/entities/done_transaction_entity.dart';
 
 class DoneTransactionAdapter extends IsarAdapterBase {

@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:simple_plan/adapters/categorieAdapter/models/category_model.dart';
-import 'package:simple_plan/adapters/doneTransactionAdapter/models/done_transaction_model.dart';
-import 'package:simple_plan/adapters/scheduledNotificationAdapter/models/scheduled_notification_model.dart';
-import 'package:simple_plan/adapters/transactionEntryAdapter/models/transaction_entry_model.dart';
+import 'package:simple_plan/adapters/isarAdapter/categories/models/category_model.dart';
+import 'package:simple_plan/adapters/isarAdapter/doneTransactions/models/done_transaction_model.dart';
+import 'package:simple_plan/adapters/isarAdapter/scheduledNotifications/models/scheduled_notification_model.dart';
+import 'package:simple_plan/adapters/isarAdapter/transactionEntries/models/transaction_entry_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IsarAdapterBase {

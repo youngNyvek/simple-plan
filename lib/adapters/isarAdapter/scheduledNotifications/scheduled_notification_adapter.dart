@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
-import 'package:simple_plan/adapters/isar_adapter_base.dart';
-import 'package:simple_plan/adapters/scheduledNotificationAdapter/models/scheduled_notification_model.dart';
+import 'package:simple_plan/adapters/isarAdapter/isar_adapter_base.dart';
+import 'package:simple_plan/adapters/isarAdapter/scheduledNotifications/models/scheduled_notification_model.dart';
 import 'package:simple_plan/domain/entities/notification_entity.dart';
 
 class ScheduledNotificationAdapter extends IsarAdapterBase {

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "248239413837",
+    "firebase_url": "https://simple-plan-aea78-default-rtdb.firebaseio.com",
+    "project_id": "simple-plan-aea78",
+    "storage_bucket": "simple-plan-aea78.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248239413837:android:10076fd8258d1565b69a04",
+        "android_client_info": {
+          "package_name": "com.simple_plan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmxzyi7zWW-VDfVR2qSfdmK6S4ACM_8Vg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

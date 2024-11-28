@@ -1,10 +1,14 @@
 import 'package:cron/cron.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:simple_plan/adapters/isar_adapter_base.dart';
-import 'package:simple_plan/adapters/pushNotificationAdapter/push_notification_adapter.dart';
+import 'package:simple_plan/adapters/firebaseAuthAdapter/index.dart';
+import 'package:simple_plan/adapters/firestoreAdapter/firestore_adapter_base.dart';
+import 'package:simple_plan/adapters/isarAdapter/isar_adapter_base.dart';
+import 'package:simple_plan/adapters/isarAdapter/pushNotifications/push_notification_adapter.dart';
 import 'package:simple_plan/domain/services/verify_notifications_scheduled_service.dart';
+import 'package:simple_plan/firebase_options.dart';
 import 'package:simple_plan/presentation/screens/addTransaction/index.dart';
 import 'package:simple_plan/presentation/screens/home/index.dart';
 import 'package:simple_plan/presentation/constants/theme_colors.dart';
@@ -13,6 +17,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await IsarAdapterBase.initialize();
   await PushNotificationAdapter.initialize();
+  // await FirestoreAdapterBase.initialize();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   final cron = Cron();
   final verifyNotificationsScheduledService =
@@ -20,6 +28,8 @@ void main() async {
 
   cron.schedule(Schedule.parse('0 0 28 * *'),
       verifyNotificationsScheduledService.execute);
+
+  FirebaseAuthAdapter.login();
 
   runApp(const MyApp());
 }

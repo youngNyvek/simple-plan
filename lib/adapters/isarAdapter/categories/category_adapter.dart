@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
-import 'package:simple_plan/adapters/categorieAdapter/models/category_model.dart';
-import 'package:simple_plan/adapters/isar_adapter_base.dart';
+import 'package:simple_plan/adapters/isarAdapter/categories/models/category_model.dart';
+import 'package:simple_plan/adapters/isarAdapter/isar_adapter_base.dart';
 import 'package:simple_plan/domain/entities/category_entity.dart';
 
 class CategoryAdapter extends IsarAdapterBase {

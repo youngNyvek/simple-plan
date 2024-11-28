@@ -1,4 +1,4 @@
-import 'package:simple_plan/adapters/categorieAdapter/category_adapter.dart';
+import 'package:simple_plan/adapters/isarAdapter/categories/category_adapter.dart';
 
 class DeleteCategoryUseCase {
   final CategoryAdapter _categoryDb = CategoryAdapter();

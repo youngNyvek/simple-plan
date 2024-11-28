@@ -1,5 +1,5 @@
-import 'package:simple_plan/adapters/categorieAdapter/category_adapter.dart';
-import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
+import 'package:simple_plan/adapters/isarAdapter/categories/category_adapter.dart';
+import 'package:simple_plan/adapters/isarAdapter/transactionEntries/transaction_entry_adapter.dart';
 import 'package:simple_plan/domain/entities/category_entity.dart';
 
 class InsertCategoryUseCase {

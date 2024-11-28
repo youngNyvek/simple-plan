@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:simple_plan/adapters/isar_adapter_base.dart';
-import 'package:simple_plan/adapters/pushNotificationAdapter/push_notification_adapter.dart';
-import 'package:simple_plan/adapters/scheduledNotificationAdapter/scheduled_notification_adapter.dart';
-import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
+import 'package:simple_plan/adapters/isarAdapter/isar_adapter_base.dart';
+import 'package:simple_plan/adapters/isarAdapter/pushNotifications/push_notification_adapter.dart';
+import 'package:simple_plan/adapters/isarAdapter/scheduledNotifications/scheduled_notification_adapter.dart';
+import 'package:simple_plan/adapters/isarAdapter/transactionEntries/transaction_entry_adapter.dart';
 import 'package:simple_plan/domain/enums/occurence_type.dart';
 import 'package:simple_plan/domain/shared/utils/date_utils.dart';
 

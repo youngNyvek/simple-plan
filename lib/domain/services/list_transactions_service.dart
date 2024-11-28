@@ -1,5 +1,5 @@
-import 'package:simple_plan/adapters/doneTransactionAdapter/done_transaction_adapter.dart';
-import 'package:simple_plan/adapters/transactionEntryAdapter/transaction_entry_adapter.dart';
+import 'package:simple_plan/adapters/isarAdapter/doneTransactions/done_transaction_adapter.dart';
+import 'package:simple_plan/adapters/isarAdapter/transactionEntries/transaction_entry_adapter.dart';
 import 'package:simple_plan/domain/entities/transaction_entry_entity.dart';
 
 class ListTransactionsService {
